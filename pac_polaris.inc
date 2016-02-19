@@ -46,7 +46,7 @@ class PolarisAPI {
    *
    * @return string
    */
-  private function getPolarisDate() {
+  private static function getPolarisDate() {
     return gmdate('r');
   }
 
@@ -136,7 +136,7 @@ class PolarisAPI {
    * @return mixed
    *   JSON object as stdClass or string.
    */
-  protected function callAPI($endpoint, $method = 'GET', $pass = '', $fields = array(), $raw_json = FALSE, $protected = FALSE, $as_staff = FALSE, $xml = FALSE) {
+  protected static function callAPI($endpoint, $method = 'GET', $pass = '', $fields = array(), $raw_json = FALSE, $protected = FALSE, $as_staff = FALSE, $xml = FALSE) {
     // Construct the API URL.
     $url = self::$scheme . '://' . self::$server;
     // The secret is necessary for the signature of protected methods as well as
@@ -1223,4 +1223,23 @@ class PolarisAPI {
     }
   }
 
+}
+
+// Negates some Drupal-specific functions in this file to allow for use in other
+// systems.
+if (!function_exists('cache_get')) {
+  define('WATCHDOG_ERROR', 'Generic Error');
+  define('CACHE_TEMPORARY', 'Temporary cache');
+  function cache_clear_all() {
+    return TRUE;
+  }
+  function cache_get() {
+    return NULL;
+  }
+  function cache_set() {
+    return TRUE;
+  }
+  function watchdog() {
+    return TRUE;
+  }
 }
