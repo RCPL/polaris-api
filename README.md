@@ -55,8 +55,8 @@ Then, you can begin making calls to any of the API methods included in the class
 similarly to this:
 
 ```
-// Try pulling a list of titles.
-$query = 'q=' . urlencode('Harry Potter');
+// Try pulling a list of 25 titles.
+$query = 'q=' . urlencode('Harry Potter') . '&bibsperpage=25';
 $result = PolarisAPI::searchBibs($query);
 ```
 
