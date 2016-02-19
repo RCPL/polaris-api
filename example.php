@@ -16,18 +16,24 @@ if (file_exists('settings.local.php')) {
   include 'settings.local.php';
 }
 
-// Is Kint present?
-if (file_exists('kint/Kint.class.php')) {
+// Is Krumo or Kint present?
+if (file_exists('krumo/class.krumo.php')) {
+  include('krumo/class.krumo.php');
+}
+else if (file_exists('kint/Kint.class.php')) {
   include 'kint/Kint.class.php';
 }
 
 include('pac_polaris.inc');
 
-// Try pulling a list of titles.
-$query = 'q=' . urlencode('Harry Potter');
+// Try pulling a list of 25 titles.
+$query = 'q=' . urlencode('Harry Potter') . '&bibsperpage=25';
 $result = PolarisAPI::searchBibs($query);
 
-if (function_exists('d')) {
+if (function_exists('krumo')) {
+  krumo($result);
+}
+else if (function_exists('d')) {
   Kint::dump($result);
 }
 else {
