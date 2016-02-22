@@ -7,8 +7,10 @@ from Innovative Interfaces.
 Polaris Developer Network (http://developer.polarislibrary.com/).
 2. You should receive an API Access ID and API Access Key for use with your
 system. Make note of those.
-3. Create a special account & password on your network that has permissions... // @TODO
-4. Create a matching account & password in Polaris that has permissions... // @TODO
+3. Create a special account & password on your network that is just a basic
+domain user.
+4. Create a matching account & password in Polaris that has the same permissions
+as a basic circulation account. Make note of the Polaris User ID number.
 
 The reason for steps 3 and 4 according to the Polaris 5.0 documentation
 (available at the URL above):
