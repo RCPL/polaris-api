@@ -78,7 +78,7 @@ class PolarisAPI {
    * @internal param string $type
    * @return mixed
    */
-  protected function postCallAPI($endpoint, $fields, $pass = '', $raw_json = FALSE, $protected = FALSE, $as_staff = FALSE, $xml = FALSE) {
+  protected static function postCallAPI($endpoint, $fields, $pass = '', $raw_json = FALSE, $protected = FALSE, $as_staff = FALSE, $xml = FALSE) {
     return self::callAPI($endpoint, 'POST', $pass, $fields, $raw_json, $protected, $as_staff, $xml);
   }
 
@@ -95,7 +95,7 @@ class PolarisAPI {
    * @internal param string $type
    * @return mixed
    */
-  protected function putCallAPI($endpoint, $fields, $pass = '', $raw_json = FALSE, $protected = FALSE, $as_staff = FALSE, $xml = FALSE) {
+  protected static function putCallAPI($endpoint, $fields, $pass = '', $raw_json = FALSE, $protected = FALSE, $as_staff = FALSE, $xml = FALSE) {
     return self::callAPI($endpoint, 'PUT', $pass, $fields, $raw_json, $protected, $as_staff, $xml);
   }
 
@@ -110,7 +110,7 @@ class PolarisAPI {
    * @internal param string $type
    * @return mixed
    */
-  protected function deleteCallAPI($endpoint, $fields, $pass = '', $raw_json = FALSE) {
+  protected static function deleteCallAPI($endpoint, $fields, $pass = '', $raw_json = FALSE) {
     return self::callAPI($endpoint, 'DELETE', $pass, $fields, $raw_json);
   }
 
@@ -500,12 +500,16 @@ class PolarisAPI {
       	  break;
       	case 2:
       	  //answer
-          self::sendHoldEmail($bib_id, $location_code, $patron_id, $results->Message); // Send an email to the user when they successfully place a hold.
+          if (function_exists('drupal_get_path')) { // Ensure this is a Drupal environment.
+            self::sendHoldEmail($bib_id, $location_code, $patron_id, $results->Message); // Send an email to the user when they successfully place a hold.
+          }
       	  return array('status' => TRUE, 'message' => $results->Message);
       	  break;
       	case 3:
       	  //conditional
-          self::sendHoldEmail($bib_id, $location_code, $patron_id, $results->Message); // Send an email to the user when they successfully place a hold.
+          if (function_exists('drupal_get_path')) { // Ensure this is a Drupal environment.
+            self::sendHoldEmail($bib_id, $location_code, $patron_id, $results->Message); // Send an email to the user when they successfully place a hold.
+          }
       	  //call hold request reply, which recursively replies until an answer or error is returned
       	  return self::holdRequestReply($results->RequestGUID, $location_code, $results->StatusValue, $results->TxnQualifier, $results->TxnGroupQualifer, $xml);
       	  break;
@@ -1144,7 +1148,7 @@ class PolarisAPI {
    * A function to help with holds. Need to encode XML like JSON.
    * From: http://tinyurl.com/n8cjynm
    */
-  private function xml_encode($obj) {
+  private static function xml_encode($obj) {
     $xml = new XmlWriter();
     $xml->openMemory();
     $xml->startDocument('1.0');
@@ -1179,7 +1183,7 @@ class PolarisAPI {
   /**
    * Function to send a success email to users after their hold has been placed.
    */
-  private function sendHoldEmail($bib_id, $location_code, $patron_id, $message) {
+  private static function sendHoldEmail($bib_id, $location_code, $patron_id, $message) {
     global $user;
     $account_w = entity_metadata_wrapper('user', $user);
     $patron_barcode = $account_w->field_patron_login_user_id->value();
@@ -1238,6 +1242,14 @@ if (!function_exists('cache_get')) {
   }
   function cache_set() {
     return TRUE;
+  }
+  function drupal_json_decode($data) {
+    $result = json_decode($data);
+    return $result;
+  }
+  function drupal_json_encode($data) {
+    $result = json_encode($data);
+    return $result;
   }
   function watchdog() {
     return TRUE;
