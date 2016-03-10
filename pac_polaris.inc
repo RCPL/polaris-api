@@ -110,8 +110,8 @@ class PolarisAPI {
    * @internal param string $type
    * @return mixed
    */
-  protected static function deleteCallAPI($endpoint, $fields, $pass = '', $raw_json = FALSE) {
-    return self::callAPI($endpoint, 'DELETE', $pass, $fields, $raw_json);
+  protected static function deleteCallAPI($endpoint, $fields, $pass = '', $raw_json = FALSE, $protected = FALSE, $as_staff = FALSE, $xml = FALSE) {
+    return self::callAPI($endpoint, 'DELETE', $pass, $fields, $raw_json, $protected, $as_staff, $xml);
   }
 
   /**
@@ -823,17 +823,21 @@ class PolarisAPI {
   }
 
   /**
-   * Get basic patron lists
+   * Add a new list for a customer.
+   * Implements PatronAccountCreateTitleList. P. 121
    *
    * @param string $patron_barcode
+   * @param string $list_name
    */
-  public static function getPatronLists($patron_barcode) {
-    $endpoint = '/patron/' . $patron_barcode . '/patronaccountgettitlelists';
+  public static function PatronAccountCreateTitleList($patron_barcode, $list_name) {
+    $endpoint = '/patron/' . $patron_barcode . '/patronaccountcreatetitlelist';
+    $data = new stdClass();
+    $data->RecordStoreName = $list_name;
     try {
-      return self::getCallAPI($endpoint, NULL, NULL, FALSE, TRUE, TRUE);
+      return self::postCallAPI($endpoint, $data, NULL, FALSE, FALSE, TRUE, $xml);
     }
     catch(Exception $e) {
-      watchdog('PolarisAPI', 'Error while executing getPatronLists: @exception',
+      watchdog('PolarisAPI', 'Error while executing PatronAccountCreateTitleList: @exception',
         array('@exception' => $e->getMessage()),
         WATCHDOG_ERROR);
       return FALSE;
@@ -841,18 +845,38 @@ class PolarisAPI {
   }
 
   /**
-   * Get the items on a list for an individual customer.
+   * Get basic patron lists
+   * Implements PatronAccountGetTitleLists. P. 124
    *
    * @param string $patron_barcode
-   * @param integer $list_id
    */
-  public static function getPatronListTitles($patron_barcode, $list_id) {
-    $endpoint = '/patron/' . $patron_barcode . '/patrontitlelistgettitles?list=' . $list_id;
+  public static function PatronAccountGetTitleLists($patron_barcode) {
+    $endpoint = '/patron/' . $patron_barcode . '/patronaccountgettitlelists';
     try {
       return self::getCallAPI($endpoint, NULL, NULL, FALSE, TRUE, TRUE);
     }
     catch(Exception $e) {
-      watchdog('PolarisAPI', 'Error while executing getPatronListTitles: @exception',
+      watchdog('PolarisAPI', 'Error while executing PatronAccountGetTitleLists: @exception',
+        array('@exception' => $e->getMessage()),
+        WATCHDOG_ERROR);
+      return FALSE;
+    }
+  }
+
+  /**
+   * Delete a specific list for a customer
+   * Implements PatronAccountDeleteTitleList. P. 126
+   *
+   * @param string $patron_barcode
+   * @param integer $list_id
+   */
+  public static function PatronAccountDeleteTitleList($patron_barcode, $list_id) {
+    $endpoint = '/patron/' . $patron_barcode . '/patronaccountdeletetitlelist?list=' . $list_id;
+    try {
+      return self::deleteCallAPI($endpoint, $data, NULL, NULL, TRUE, TRUE);
+    }
+    catch(Exception $e) {
+      watchdog('PolarisAPI', 'Error while executing PatronAccountDeleteTitleList: @exception',
         array('@exception' => $e->getMessage()),
         WATCHDOG_ERROR);
       return FALSE;
@@ -861,6 +885,7 @@ class PolarisAPI {
 
   /**
    * Add an item into a customer's list.
+   * Implements PatronTitleListAddTitle. P. 128
    *
    * @param string $patron_barcode
    * @param string $list_id
@@ -883,27 +908,35 @@ class PolarisAPI {
     }
   }
 
+  // @TODO: PatronTitleListCopyTitle. P. 131
+
+  // @TODO: PatronTitleListCopyAllTitles. P. 134
 
   /**
-   * Add a new list for a customer.
+   * Get the items on a list for an individual customer.
+   * Implements PatronTitleListGetTitles. P. 137
    *
    * @param string $patron_barcode
-   * @param string $list_name
+   * @param integer $list_id
    */
-  public static function patronListAdd($patron_barcode, $list_name) {
-    $endpoint = '/patron/' . $patron_barcode . '/patronaccountcreatetitlelist';
-    $data = new stdClass();
-    $data->RecordStoreName = $list_name;
+  public static function PatronTitleListGetTitles($patron_barcode, $list_id) {
+    $endpoint = '/patron/' . $patron_barcode . '/patrontitlelistgettitles?list=' . $list_id;
     try {
-      return self::postCallAPI($endpoint, $data, NULL, FALSE, FALSE, TRUE, $xml);
+      return self::getCallAPI($endpoint, NULL, NULL, FALSE, TRUE, TRUE);
     }
     catch(Exception $e) {
-      watchdog('PolarisAPI', 'Error while executing patronListItemAdd: @exception',
+      watchdog('PolarisAPI', 'Error while executing PatronTitleListGetTitles: @exception',
         array('@exception' => $e->getMessage()),
         WATCHDOG_ERROR);
       return FALSE;
     }
   }
+
+  // @TODO: PatronTitleListMoveTitle. P. 139
+
+  // @TODO: PatronTitleListDeleteTitle. P. 142
+
+  // @TODO: PatronTitleListDeleteAllTitles. P. 144
 
   /**
    * Pay fine for specified patron account
