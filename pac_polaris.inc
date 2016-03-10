@@ -891,7 +891,7 @@ class PolarisAPI {
    * @param string $list_id
    * @param integer $item_id
    */
-  public static function patronListItemAdd($patron_barcode, $list_id, $item_id, $title) {
+  public static function PatronTitleListAddTitle($patron_barcode, $list_id, $item_id, $title) {
     $endpoint = '/patron/' . $patron_barcode . '/patrontitlelistaddtitle';
     $data = new stdClass();
     $data->RecordStoreID = $list_id;
@@ -901,14 +901,40 @@ class PolarisAPI {
       return self::postCallAPI($endpoint, $data, NULL, FALSE, FALSE, TRUE, $xml);
     }
     catch(Exception $e) {
-      watchdog('PolarisAPI', 'Error while executing patronListItemAdd: @exception',
+      watchdog('PolarisAPI', 'Error while executing PatronTitleListAddTitle: @exception',
         array('@exception' => $e->getMessage()),
         WATCHDOG_ERROR);
       return FALSE;
     }
   }
 
-  // @TODO: PatronTitleListCopyTitle. P. 131
+  /**
+   * Copy a title from one list to another in a patron account.
+   * Implements PatronTitleListCopyTitle. P. 131
+   * Note: A negative RecordID (-990) can be submitted instead of the title's
+   * position.
+   *
+   * @param string $patron_barcode
+   * @param integer $from_list_id
+   * @param integer $position
+   * @param integer $to_list_id
+   */
+  public static function PatronTitleListCopyTitle($patron_barcode, $from_list_id, $position = -990, $to_list_id) {
+    $endpoint = '/patron/' . $patron_barcode . '/patrontitlelistcopytitle';
+    $data = new stdClass();
+    $data->FromRecordStoreID = $from_list_id;
+    $data->FromPosition = $position;
+    $data->ToRecordStoreID = $to_list_id;
+    try {
+      return self::postCallAPI($endpoint, $data, NULL, FALSE, FALSE, TRUE, $xml);
+    }
+    catch(Exception $e) {
+      watchdog('PolarisAPI', 'Error while executing PatronTitleListCopyTitle: @exception',
+        array('@exception' => $e->getMessage()),
+        WATCHDOG_ERROR);
+      return FALSE;
+    }
+  }
 
   // @TODO: PatronTitleListCopyAllTitles. P. 134
 
@@ -1192,12 +1218,6 @@ class PolarisAPI {
     }
     elseif (property_exists($obj, 'TxnGroupQualifier')) { // If it's a reply to a conditional question from Polaris, do this wrapper.
       $xml->startElement('HoldRequestReplyData');
-    }
-    elseif (property_exists($obj, 'RecordStoreID')) { // For My Lists adding an item to a list.
-      $xml->startElement('PatronTitleListAddTitleData');
-    }
-    elseif (property_exists($obj, 'RecordStoreName')) { // For My Lists adding a new list.
-      $xml->startElement('PatronAccountCreateTitleListData');
     }
     else { // Otherwise we're just making a hold request to start with. Do this wrapper.
       $xml->startElement('HoldRequestCreateData');
