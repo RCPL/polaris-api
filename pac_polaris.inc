@@ -103,15 +103,15 @@ class PolarisAPI {
    * Call API with DELETE.
    *
    * @param $endpoint
-   * @param array $fields
    * @param string $pass
    * @param bool|string $raw_json
+   * @param bool $protected
+   * @param bool $as_staff
    * @internal param string $api_call
-   * @internal param string $type
    * @return mixed
    */
-  protected static function deleteCallAPI($endpoint, $fields, $pass = '', $raw_json = FALSE, $protected = FALSE, $as_staff = FALSE, $xml = FALSE) {
-    return self::callAPI($endpoint, 'DELETE', $pass, $fields, $raw_json, $protected, $as_staff, $xml);
+  protected static function deleteCallAPI($endpoint, $pass = '', $raw_json = FALSE, $protected = FALSE, $as_staff = FALSE) {
+    return self::callAPI($endpoint, 'DELETE', $pass, NULL, $raw_json, $protected, $as_staff);
   }
 
   /**
@@ -207,15 +207,15 @@ class PolarisAPI {
     $curl_opts = array();
     switch ($method) {
       case 'GET':
-      case 'DELETE':
         $curl_opts[CURLOPT_HTTPGET] = 1;
         break;
-
+      case 'DELETE':
+        $curl_opts[CURLOPT_CUSTOMREQUEST] = 'DELETE';
+        break;
       case 'POST':
         $curl_opts[CURLOPT_POST] = 1;
         $curl_opts[CURLOPT_POSTFIELDS] = $fields;
         break;
-
       case 'PUT':
         $curl_opts[CURLOPT_CUSTOMREQUEST] = 'PUT';
         $curl_opts[CURLOPT_POSTFIELDS] = $fields;
@@ -236,6 +236,7 @@ class PolarisAPI {
     curl_setopt_array($ch, $curl_opts);
     // Execute the external HTTP request and gather the response.
     $response = curl_exec($ch);
+
     // Get the length of the response headers so they can be parsed.
     $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
     // Close the cURL request.
@@ -834,7 +835,7 @@ class PolarisAPI {
     $data = new stdClass();
     $data->RecordStoreName = $list_name;
     try {
-      return self::postCallAPI($endpoint, $data, NULL, FALSE, FALSE, TRUE, $xml);
+      return self::postCallAPI($endpoint, $data, NULL, FALSE, FALSE, TRUE);
     }
     catch(Exception $e) {
       watchdog('PolarisAPI', 'Error while executing PatronAccountCreateTitleList: @exception',
@@ -873,7 +874,7 @@ class PolarisAPI {
   public static function PatronAccountDeleteTitleList($patron_barcode, $list_id) {
     $endpoint = '/patron/' . $patron_barcode . '/patronaccountdeletetitlelist?list=' . $list_id;
     try {
-      return self::deleteCallAPI($endpoint, $data, NULL, NULL, TRUE, TRUE);
+      return self::deleteCallAPI($endpoint, NULL, FALSE, FALSE, TRUE);
     }
     catch(Exception $e) {
       watchdog('PolarisAPI', 'Error while executing PatronAccountDeleteTitleList: @exception',
@@ -898,7 +899,7 @@ class PolarisAPI {
     $data->RecordName = $title;
     $data->LocalControlNumber = $item_id;
     try {
-      return self::postCallAPI($endpoint, $data, NULL, FALSE, FALSE, TRUE, $xml);
+      return self::postCallAPI($endpoint, $data, NULL, FALSE, FALSE, TRUE);
     }
     catch(Exception $e) {
       watchdog('PolarisAPI', 'Error while executing PatronTitleListAddTitle: @exception',
@@ -926,7 +927,7 @@ class PolarisAPI {
     $data->FromPosition = $position;
     $data->ToRecordStoreID = $to_list_id;
     try {
-      return self::postCallAPI($endpoint, $data, NULL, FALSE, FALSE, TRUE, $xml);
+      return self::postCallAPI($endpoint, $data, NULL, FALSE, FALSE, TRUE);
     }
     catch(Exception $e) {
       watchdog('PolarisAPI', 'Error while executing PatronTitleListCopyTitle: @exception',
@@ -960,9 +961,46 @@ class PolarisAPI {
 
   // @TODO: PatronTitleListMoveTitle. P. 139
 
-  // @TODO: PatronTitleListDeleteTitle. P. 142
+  /**
+   * Delete a specific list for a customer
+   * Implements PatronTitleListDeleteTitle. P. 142
+   *
+   * @param string $patron_barcode
+   * @param integer $list_id
+   * @param integer $position_id
+   */
+  public static function PatronTitleListDeleteTitle($patron_barcode, $list_id, $position_id) {
+    $endpoint = '/patron/' . $patron_barcode . '/patrontitlelistdeletetitle?list=' . $list_id . '&position=' . $position_id;
+    try {
+      return self::deleteCallAPI($endpoint, NULL, FALSE, FALSE, TRUE);
+    }
+    catch(Exception $e) {
+      watchdog('PolarisAPI', 'Error while executing PatronTitleListDeleteTitle: @exception',
+        array('@exception' => $e->getMessage()),
+        WATCHDOG_ERROR);
+      return FALSE;
+    }
+  }
 
-  // @TODO: PatronTitleListDeleteAllTitles. P. 144
+  /**
+   * Delete all titles from a specific list for a customer
+   * Implements PatronTitleListDeleteAllTitles. P. 144
+   *
+   * @param string $patron_barcode
+   * @param integer $list_id
+   */
+  public static function PatronTitleListDeleteAllTitles($patron_barcode, $list_id) {
+    $endpoint = '/patron/' . $patron_barcode . '/patrontitlelistdeletealltitles?list=' . $list_id;
+    try {
+      return self::deleteCallAPI($endpoint, NULL, FALSE, FALSE, TRUE);
+    }
+    catch(Exception $e) {
+      watchdog('PolarisAPI', 'Error while executing PatronTitleListDeleteAllTitles: @exception',
+        array('@exception' => $e->getMessage()),
+        WATCHDOG_ERROR);
+      return FALSE;
+    }
+  }
 
   /**
    * Pay fine for specified patron account
