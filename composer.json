@@ -1,0 +1,10 @@
+{
+    "name": "rcpl/polaris-api",
+    "description": "Polaris ILS API for PHP integration",
+    "type": "library",
+    "require": {
+        "guzzle/guzzle": "^3.9",
+        "zendframework/zend-stdlib": "^3.1"
+    },
+    "license": "MIT"
+}
