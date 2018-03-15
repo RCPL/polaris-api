@@ -4,7 +4,7 @@
     "type": "library",
     "require": {
         "guzzlehttp/guzzle": "^6.0",
-        "zendframework/zend-stdlib": "^3.1"
+        "zendframework/zend-stdlib": "^3.0.1"
     },
     "license": "MIT"
 }
