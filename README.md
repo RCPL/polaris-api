@@ -1,4 +1,4 @@
-# Polaris-API-PHP-Class
+# Polaris-API
 A PHP class built for interacting with the Polaris API. Polaris is a product
 from Innovative Interfaces.
 
@@ -23,43 +23,30 @@ The reason for steps 3 and 4 according to the Polaris 5.0 documentation
 >for the remainder of their operations.
 
 ## Installation
-Simply add the included "pac_polaris.inc" file into your web code and start
-using it!
+```
+git clone --branch 2.x https://github.com/AtenDesignGroup/polaris-api.git
+composer install
+```
 
 ## Usage
 
 Please see the included **example.php** for example implementation code.
 
-This stand-alone PHP class can be included in your website code with a simple
-include statement such as:
-
 ```
-include('pac_polaris.inc');
-```
+use RCPL\Polaris\Client;
 
-You'll also want to create an array within your code that contains all of your
-API credentials like:
+$client = new Client([
+  'ACCESS_ID'      => '< your info here >',
+  'ACCESS_KEY'     => '< your info here >',
+  'HOST'           => '< your info here >',
+  'STAFF_DOMAIN'   => '< your info here >',
+  'STAFF_ID'       => '< your info here >',
+  'STAFF_USERNAME' => '< your info here >',
+  'STAFF_PASSWORD' => '< your info here >',
+]);
 
-```
-/* Important: Credentials below must be filled in! */
-$GLOBALS['conf'] = array(
-  'POLARIS_API_ACCESS_ID' => '', // Given to you by your Polaris Site Manager
-  'POLARIS_API_ACCESS_KEY' => '', // Given to you by your Polaris Site Manager
-  'POLARIS_API_HOST' => '', // The hostname (e.g., polaris.yourlibrary.com)
-  'POLARIS_API_STAFF_DOMAIN' => '', // The network domain for protected methods
-  'POLARIS_API_STAFF_ID' => '', // The Polaris account numeric id for protected methods
-  'POLARIS_API_STAFF_USERNAME' => '', // The Polaris and matching network domain username
-  'POLARIS_API_STAFF_PASSWORD' => '' // The Polaris and matching network domain password
-);
-```
-
-Then, you can begin making calls to any of the API methods included in the class
-similarly to this:
-
-```
-// Try pulling a list of 25 titles.
-$query = 'q=' . urlencode('Harry Potter') . '&bibsperpage=25';
-$result = PolarisAPI::searchBibs($query);
+$patron = $client->patron->get('< libarry card number>');
+var_dump($patron->data());
 ```
 
 Most of the methods are documented within the class file and provide information

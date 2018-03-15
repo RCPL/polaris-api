@@ -1,49 +1,17 @@
 <?php
 
-/* Important: Credentials below must be filled in! */
-$GLOBALS['conf'] = array(
-  'POLARIS_API_ACCESS_ID' => '', // Given to you by your Polaris Site Manager
-  'POLARIS_API_ACCESS_KEY' => '', // Given to you by your Polaris Site Manager
-  'POLARIS_API_HOST' => '', // The hostname (e.g., polaris.yourlibrary.com)
-  'POLARIS_API_STAFF_DOMAIN' => '', // The network domain for protected methods
-  'POLARIS_API_STAFF_ID' => '', // The Polaris account numeric id for protected methods
-  'POLARIS_API_STAFF_USERNAME' => '', // The Polaris and matching network domain username
-  'POLARIS_API_STAFF_PASSWORD' => '' // The Polaris and matching network domain password
-);
+use RCPL\Polaris\Client;
 
-// Look for optional local settings file. Helpful for presentation purposes. :)
-if (file_exists('settings.local.php')) {
-  include 'settings.local.php';
-}
+$client = new Client([
+  'ACCESS_ID'      => '< your info here >',
+  'ACCESS_KEY'     => '< your info here >',
+  'HOST'           => '< your info here >',
+  'STAFF_DOMAIN'   => '< your info here >',
+  'STAFF_ID'       => '< your info here >',
+  'STAFF_USERNAME' => '< your info here >',
+  'STAFF_PASSWORD' => '< your info here >',
+]);
 
-// Is Krumo or Kint present?
-if (file_exists('krumo/class.krumo.php')) {
-  include('krumo/class.krumo.php');
-}
-else if (file_exists('kint/Kint.class.php')) {
-  include 'kint/Kint.class.php';
-}
-
-// Include the Polaris API PHP Class file
-include('pac_polaris.inc');
-
-/**
- * Reusable display function for results of an API call.
- *
- * @param obj $result
- * @return n/a
- */
-function display_result($result) {
-  if (function_exists('krumo')) {
-    krumo($result);
-  }
-  else if (function_exists('d')) {
-    Kint::dump($result);
-  }
-  else {
-    var_dump($result);
-  }
-}
 
 /**
  * Begin examples.
@@ -53,9 +21,7 @@ print '<h1>Polaris API Example Calls</h1>';
 // Try pulling a list of 25 titles.
 print '<h2>1) Pulling a list of 25 titles w/ keyword "Harry Potter" using ' .
 'BibSearch</h2>';
-$query = 'q=' . urlencode('Harry Potter') . '&bibsperpage=25';
-$result = PolarisAPI::searchBibs($query);
-display_result($result);
+$result = $client->bibs->search(['text' => 'Harry Potter', 'total' => 25]);
 
 // Get a list of hold requests for a customer.
 /*print '<h2>2) Get a list of hold requests for a customer using PatronHoldRequestsGet</h2>';
