@@ -51,6 +51,11 @@ class Client extends HttpClient {
    */
   public $template = '{base}{+rest}{/type}{/version}{/lang-id}{/app-id}{/org-id}{/access-token}{+path}';
 
+  public $date;
+
+  public function parameters(array $params) {
+    return new Parameters($params);
+  }
 
   /**
    * Client constructor.
@@ -67,8 +72,10 @@ class Client extends HttpClient {
       'org-id' => '1',
     ]);
 
+    $this->date = str_replace('+0000', 'GMT', gmdate('r'));
+
     $config = [
-      'headers' => [ 
+      'headers' => [
         'PolarisDate' => $this->date,
         'Content-Type' => 'application/json',
         'Accept' => 'application/json',
@@ -98,78 +105,33 @@ class Client extends HttpClient {
     return new UriTemplate();
   }
 
-<<<<<<< HEAD
-=======
   public function params() {
     return $this->params;
   }
 
->>>>>>> 56a8d47... Adds uri template functionality instead of another param bag
   public function __get($name) {
     $class = ucwords($name);
     if (isset($this->{$name})) {
       return $this->{$name};
     }
-    if (class_exists('\RCPL\Polaris\\' . $class)) {
-      $class = '\RCPL\Polaris\\' . $class;
+    if (class_exists('\RCPL\Polaris\Controller\\' . $class)) {
+      $class = '\RCPL\Polaris\Controller\\' . $class;
       $this->{$name} = new $class($this);
       return $this->{$name};
     }
     return FALSE;
   }
 
-  public function public(Staff $staff = NULL) {
-    $url = $this->url('public') . '/';
-    if ($staff) {
-      $this->config->set('headers', [
-        'X-PAPI-AccessToken' => $staff->auth()->AccessToken,
-      ]);
-      $this->config->set('access_secret', $staff->auth()->AccessSecret);
-    }
-    $this->config->set('base_uri', $url);
-    return $this;
+  public function uri() {
+    return $this->uri;
   }
 
-  public function protected(Staff $staff = NULL) {
-    $url = $this->url('private') . '/';
-    if ($staff) {
-      $url .= $staff->auth()->AccessToken . '/';
-      $this->config->set('access_secret', $staff->auth()->AccessSecret);
-    }
-    $this->config->set('base_uri', $url);
-    return $this;
+  public function get($path, Parameters $config) {
+    return parent::get($path, $config->toArray());
   }
 
-  public function get($path) {
-    return $this->auth('GET', $path)->json($this->client->get($path, $this->config->toArray()));
-  }
-
-  public function post($path) {
-    return $this->auth('POST', $path)->json($this->client->post($path, $this->config->toArray()));
-  }
-
-  public function auth($method, $path) {
-    $signature = $this->buildSignature($method, $this->config->get('base_uri') . $path, $this->date, NULL, $this->config->get('access_secret'));
-    $headers = $this->config->get('headers', []);
-    $headers['Authorization'] = 'PWS ' . $this->params->get('ACCESS_ID') . ':' . $signature;
-    $this->config->set('headers', $headers);
-    return $this;
-  }
-
-  private function json(Response $request) {
-    return json_decode($request->getBody()->getContents());
-  }
-
-  private function url($type = 'public') {
-    $url = self::$scheme . '://' . $this->params->get('HOST');
-    //$url = "https://rltrain.richlandlibrary.com";
-    if ($type == 'public') {
-      $url .= self::$baseUrlPublic;
-    }
-    else {
-      $url .= self::$baseUrlProtected;
-    }
-    return $url;
+  public function post($path, Parameters $config) {
+    return parent::post($path, $config->toArray());
   }
 
   /**
@@ -182,18 +144,9 @@ class Client extends HttpClient {
    * @param string $access_secret
    * @return string
    */
-  private function buildSignature($http_method, $url, $date, $pass = '', $access_secret = '') {
+  public function signature($http_method, $url, $date, $pass = '', $access_secret = '') {
     $signature = $http_method . $url . $date . $pass . $access_secret;
     return base64_encode(hash_hmac('sha1', $signature, $this->params->get('ACCESS_KEY'), TRUE));
-  }
-
-  /**
-   * Get date formated to RFC-1123.
-   *
-   * @return string
-   */
-  private static function getPolarisDate() {
-    return str_replace('+0000', 'GMT', gmdate('r'));
   }
 
   /**

@@ -14,39 +14,66 @@ class Patron extends ControllerBase {
     return new static($this->client, $patron_barcode);
   }
 
+  public function authenticate($password) {
+    $endpoint = 'authenticator/patron';
+    // TODO: REFACTOR
+    $config = [
+      'json' => [
+        'Barcode' => $this->barcode,
+        'Password' => $password,
+      ],
+    ];
+
+    return $this->client->request()
+      ->public()
+      ->staff()
+      ->path('authenticator/patron')
+      ->config($config)
+      ->post()
+      ->send();
+  }
+
   public function data() {
-    $endpoint = 'patron/' . $this->barcode . '/basicdata?addresses=1';
-    //return self::getCallAPI($endpoint, NULL, FALSE, FALSE, TRUE);
-    return $this->client->staff->public()->get($endpoint);
+    $endpoint = 'patron/' . $this->barcode . '/basicdata';
+    $query = [
+      'addresses' => 1
+    ];
+    return $this->request($endpoint, $query);
   }
 
   public function holdRequests($type = 'all') {
     $endpoint = 'patron/' . $this->barcode  . '/holdrequests/' . $type;
-    // return self::getCallAPI($endpoint, NULL, NULL, FALSE, TRUE);
-    return $this->client->staff->public()->get($endpoint);
+    return $this->request($endpoint);
   }
 
   public function itemsOut($type = 'all') {
     $endpoint = 'patron/' . $this->barcode  . '/itemsout/' . $type;
-    // return self::getCallAPI($endpoint, NULL, NULL, FALSE, TRUE);
-    return $this->client->staff->public()->get($endpoint);
+    return $this->request($endpoint);
   }
 
   public function preferences() {
     $endpoint = 'patron/' . $this->barcode . '/preferences';
-    // return self::getCallAPI($endpoint, NULL, NULL, FALSE, TRUE);
-    return $this->client->staff->public()->get($endpoint);
+    return $this->request($endpoint);
   }
 
   public function account() {
     $endpoint = 'patron/' . $this->barcode  . '/account/outstanding';
-    // return self::getCallAPI($endpoint, NULL, NULL, FALSE, TRUE);
-    return $this->client->staff->public()->get($endpoint);
+    return $this->request($endpoint);
   }
 
   public function titleLists() {
     $endpoint = 'patron/' . $this->barcode . '/patronaccountgettitlelists';
-    // return self::getCallAPI($endpoint, NULL, NULL, FALSE, TRUE, TRUE);
-    return $this->client->staff->public()->get($endpoint);
+    return $this->request($endpoint);
   }
+
+  private function request($endpoint, array $query = []) {
+    return $this->client->request()
+      ->staff()
+      ->public()
+      ->path($endpoint)
+      ->query($query)
+      ->get()
+      ->send();
+  }
+
 }
