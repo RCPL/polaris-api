@@ -20,21 +20,9 @@ use RCPL\Polaris\Utility\Parameters;
  * @property Bib bib;
  */
 
-// \Drupal::service('key.repository')->getKey($key_id)->getKeyValue()
 
 
-class Client {
-
-//  protected static $accessID = POLARIS_API_ACCESS_ID;
-//  protected static $accessKey = POLARIS_API_ACCESS_KEY;
-  protected static $scheme = 'https';
-//  protected static $server = POLARIS_API_HOST;
-  protected static $baseUrlPublic = '/PAPIService/REST/public/v1/1033/100/1';
-  protected static $baseUrlProtected = '/PAPIService/REST/protected/v1/1033/100/1';
-//  protected static $staffPolarisId = POLARIS_API_STAFF_ID;
-//  protected static $staffDomain = POLARIS_API_STAFF_DOMAIN;
-//  protected static $staffUsername = POLARIS_API_STAFF_USERNAME;
-//  protected static $staffPassword = POLARIS_API_STAFF_PASSWORD;
+class Client extends HttpClient {
 
   /**
    * Http client
@@ -62,15 +50,7 @@ class Client {
    * Client constructor.
    */
   public function __construct(array $params) {
-    $this->params = new Parameters($params);
-    $this->date = self::getPolarisDate();
-    //define('POLARIS_API_ACCESS_ID', \Drupal::service('key.repository')->getKey('polaris_api_access_id')->getKeyValue());
-    //define('POLARIS_API_ACCESS_KEY', \Drupal::service('key.repository')->getKey('polaris_api_access_key')->getKeyValue());
-    //define('POLARIS_API_HOST', \Drupal::service('key.repository')->getKey('polaris_api_host')->getKeyValue());
-    //define('POLARIS_API_STAFF_DOMAIN', \Drupal::service('key.repository')->getKey('polaris_api_staff_domain')->getKeyValue());
-    //define('POLARIS_API_STAFF_ID', \Drupal::service('key.repository')->getKey('polaris_api_staff_id')->getKeyValue());
-    //define('POLARIS_API_STAFF_USERNAME', \Drupal::service('key.repository')->getKey('polaris_api_staff_username')->getKeyValue());
-    //define('POLARIS_API_STAFF_PASSWORD', \Drupal::service('key.repository')->getKey('polaris_api_staff_password')->getKeyValue());
+    // https://catalog.richlandlibrary.com/PAPIService/REST/public/v1/1033/100/1/search/headings/TI?startpoint=1&numterms=50&preferredpos=1
     $config = [
       'headers' => [ 
         'PolarisDate' => $this->date,
