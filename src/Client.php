@@ -6,8 +6,9 @@ use GuzzleHttp\Client as HttpClient;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\Cache\CacheBackendInterface;
 use GuzzleHttp\Psr7\Response;
-use Zend\Stdlib\Parameters;
 use RCPL\Polaris\Controller\Staff;
+use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\UriTemplate;
 use RCPL\Polaris\Utility\Parameters;
 
 /**
@@ -39,11 +40,16 @@ class Client extends HttpClient {
   protected $params;
 
     /**
-     * Configuration for http request.
-     *
-     * @var Parameters;
+     * @var UriTemplate;
      */
-  protected $config;
+  protected $uri;
+
+  /**
+   * String template for UrlTemplate class.
+   *
+   * @var string
+   */
+  public $template = '{base}{+rest}{/type}{/version}{/lang-id}{/app-id}{/org-id}{/access-token}{+path}';
 
 
   /**
@@ -51,6 +57,16 @@ class Client extends HttpClient {
    */
   public function __construct(array $params) {
     // https://catalog.richlandlibrary.com/PAPIService/REST/public/v1/1033/100/1/search/headings/TI?startpoint=1&numterms=50&preferredpos=1
+    $this->params = $this->parameters($params);
+
+    $this->uri = $this->parameters([
+      'version' => 'v1',
+      'rest' => '/PAPIService/REST',
+      'lang-id' => '1033',
+      'app-id' => '100',
+      'org-id' => '1',
+    ]);
+
     $config = [
       'headers' => [ 
         'PolarisDate' => $this->date,
@@ -64,10 +80,31 @@ class Client extends HttpClient {
         "Password" => $this->params->get('STAFF_PASSWORD'),
       ],
     ];
-    $this->client = new HttpClient($config);
-    $this->config = new Parameters([]);
+    parent::__construct($config);
   }
 
+  public function request($method = NULL, $uri = '', array $options = []) {
+    if (is_null($method)) {
+      return $this->createRequest();
+    }
+    return parent::request($method, $uri, $options);
+  }
+
+  protected function createRequest() {
+    return new Request($this);
+  }
+
+  public function template() {
+    return new UriTemplate();
+  }
+
+<<<<<<< HEAD
+=======
+  public function params() {
+    return $this->params;
+  }
+
+>>>>>>> 56a8d47... Adds uri template functionality instead of another param bag
   public function __get($name) {
     $class = ucwords($name);
     if (isset($this->{$name})) {
