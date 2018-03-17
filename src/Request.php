@@ -65,6 +65,13 @@ class Request {
     protected $uri;
 
     /**
+     * The key to return from the response to simplify it.
+     *
+     * @var string
+     */
+    protected $responseKey;
+
+    /**
      * Request constructor.
      *
      * @param Client $client
@@ -171,6 +178,21 @@ class Request {
     }
 
     /**
+     * Simplify response output.
+     */
+    public function simple($key) {
+      $this->responseKey = $key;
+      return $this;
+    }
+
+    /**
+     * @alias $this->simple()
+     */
+    public function simplify($key) {
+      return $this->simple($key);
+    }
+
+    /**
      * Send final request, this is the last step in the chain.
      *
      * @return mixed
@@ -194,8 +216,8 @@ class Request {
       $headers = $this->config->get('headers', []);
       $headers['Authorization'] = 'PWS ' . $this->client->params()->get('ACCESS_ID') . ':' . $signature;
       $this->config->set('headers', $headers);
-      $response = $this->client->{strtolower($this->method)}($this->path, $this->config);
-      return $this->json($response);
+      $response = $this->json($this->client->{strtolower($this->method)}($this->path, $this->config));
+      return !empty($this->responseKey) ? $response->{$this->responseKey} : $response;
     }
 
     private function host() {
