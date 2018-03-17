@@ -25,11 +25,11 @@ class ControllerBase {
       $this->client = $client;
     }
 
-    public function public() {
+    protected function public() {
       return $this->client->public($this);
     }
 
-    public function protected() {
+    protected function protected() {
       return $this->client->protected($this);
     }
 }
