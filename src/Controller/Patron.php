@@ -5,9 +5,16 @@ namespace RCPL\Polaris\Controller;
 use RCPL\Polaris\Client;
 
 class Patron extends ControllerBase {
+
+  private $request;
+
   public function __construct(Client $client, $patron_barcode = NULL) {
     $this->barcode = $patron_barcode;
     parent::__construct($client);
+    $this->request = $this->client->request()
+      ->staff()
+      ->public()
+      ->get();
   }
 
   public function get($patron_barcode) {
@@ -33,47 +40,46 @@ class Patron extends ControllerBase {
       ->send();
   }
 
+  /**
+   * @alias for self::data()
+   *
+   * Aligns with the naming convention of the API.
+   */
+  public function basicData() {
+    return $this->data();
+  }
+
   public function data() {
     $endpoint = 'patron/' . $this->barcode . '/basicdata';
     $query = [
       'addresses' => 1
     ];
-    return $this->request($endpoint, $query);
+    return $this->request->path($endpoint)->query($query)->simple('PatronBasicData')->send();
   }
 
   public function holdRequests($type = 'all') {
     $endpoint = 'patron/' . $this->barcode  . '/holdrequests/' . $type;
-    return $this->request($endpoint);
+    return $this->request->path($endpoint)->simple('PatronHoldRequestsGetRows')->send();
   }
 
   public function itemsOut($type = 'all') {
     $endpoint = 'patron/' . $this->barcode  . '/itemsout/' . $type;
-    return $this->request($endpoint);
+    return $this->request->path($endpoint)->simple('PatronItemsOutGetRows')->send();
   }
 
   public function preferences() {
     $endpoint = 'patron/' . $this->barcode . '/preferences';
-    return $this->request($endpoint);
+    return $this->request->path($endpoint)->simple('PatronPreferences')->send();
   }
 
   public function account() {
     $endpoint = 'patron/' . $this->barcode  . '/account/outstanding';
-    return $this->request($endpoint);
+    return $this->request->path($endpoint)->simple('PatronAccountGetRows')->send();
   }
 
   public function titleLists() {
     $endpoint = 'patron/' . $this->barcode . '/patronaccountgettitlelists';
-    return $this->request($endpoint);
-  }
-
-  private function request($endpoint, array $query = []) {
-    return $this->client->request()
-      ->staff()
-      ->public()
-      ->path($endpoint)
-      ->query($query)
-      ->get()
-      ->send();
+    return $this->request->path($endpoint)->simple('PatronAccountTitleListsRows')->send();
   }
 
 }
