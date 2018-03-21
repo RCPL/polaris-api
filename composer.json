@@ -8,6 +8,6 @@
     },
     "license": "MIT",
     "autoload": {
-      "psr-4": {"RCPL\\": "src/"}
+      "psr-4": {"RCPL\\Polaris\\": "src/"}
     }
 }
