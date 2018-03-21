@@ -45,7 +45,7 @@ $client = new Client([
   'STAFF_PASSWORD' => '< your info here >',
 ]);
 
-$patron = $client->patron->get('< libarry card number>');
+$patron = $client->patron->get('< library card number >');
 var_dump($patron->data());
 ```
 
