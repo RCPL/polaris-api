@@ -1,5 +1,7 @@
 <?php
 
+require_once('vendor/autoload.php');
+
 use RCPL\Polaris\Client;
 
 $client = new Client([
