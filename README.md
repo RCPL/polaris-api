@@ -24,7 +24,7 @@ The reason for steps 3 and 4 according to the Polaris 5.0 documentation
 
 ## Installation
 ```
-git clone --branch 2.x https://github.com/AtenDesignGroup/polaris-api.git
+git clone --branch 2.x https://github.com/RCPL/polaris-api.git
 composer install
 ```
 
