@@ -7,14 +7,6 @@ use RCPL\Polaris\Client;
 
 class ControllerBase {
 
-
-    protected function public() {
-      return $this->client->public($this);
-    }
-
-    protected function protected() {
-      return $this->client->protected($this);
-    }
   /**
    * Polaris Client.
    *
