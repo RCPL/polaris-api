@@ -26,8 +26,14 @@ class Bibliography extends ControllerBase {
    */
   public function search($text, array $params = [], $qualifier_name = 'keyword/au') {
     $endpoint = 'search/bibs/' . $qualifier_name;
-    $params['q'] = $text;
-    return $this->request($endpoint, $params);
+    $params['q'] = $this->encode($text);
+    return $this->client->request()
+      ->public()
+      ->path($endpoint)
+      ->query($params)
+      ->get()
+      ->simplify('BibSearchRows')
+      ->send();
   }
 
   public function holdings() {

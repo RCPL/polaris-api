@@ -40,6 +40,16 @@ class Patron extends ControllerBase {
       ->send();
   }
 
+  public function search($patron_barcode) {
+    return $this->client->request()
+      ->protected()
+      ->token()
+      ->get()
+      ->path('search/patrons/boolean')
+      ->query(['q' => $patron_barcode])
+      ->send();
+  }
+
   /**
    * @alias for self::data()
    *

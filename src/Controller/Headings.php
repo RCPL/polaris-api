@@ -42,7 +42,7 @@ class Headings extends ControllerBase {
   }
 
   private function text($text) {
-    $this->params->set('startpoint', $text);
+    $this->params->set('startpoint', $this->encode($text));
     return $this;
   }
 
