@@ -6,6 +6,9 @@
         "guzzlehttp/guzzle": "^6.0",
         "zendframework/zend-stdlib": "^3.0.1"
     },
+    "require-dev": {
+        "kint-php/kint": "^2.2"
+    },
     "license": "MIT",
     "autoload": {
       "psr-4": {"RCPL\\Polaris\\": "src/"}
