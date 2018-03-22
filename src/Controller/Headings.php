@@ -20,7 +20,6 @@ class Headings extends ControllerBase {
     ]);
   }
 
-
   public function author($text, array $params = []) {
     return $this->text($text)->search('AU', $params);
   }
@@ -57,4 +56,5 @@ class Headings extends ControllerBase {
       ->get()
       ->send();
   }
+
 }

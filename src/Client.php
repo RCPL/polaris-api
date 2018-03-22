@@ -18,9 +18,6 @@ use RCPL\Polaris\Utility\Parameters;
  * @property Patron patron;
  * @property Bib bib;
  */
-
-
-
 class Client extends HttpClient {
 
   /**
@@ -30,16 +27,16 @@ class Client extends HttpClient {
    */
   protected $client;
 
-    /**
-     * Polaris parameters.
-     *
-     * @var Parameters;
-     */
+  /**
+   * Polaris parameters.
+   *
+   * @var Parameters;
+   */
   protected $params;
 
-    /**
-     * @var UriTemplate;
-     */
+  /**
+   * @var UriTemplate;
+   */
   protected $uri;
 
   /**
@@ -49,8 +46,16 @@ class Client extends HttpClient {
    */
   public $template = '{base}{+rest}{/type}{/version}{/lang-id}{/app-id}{/org-id}{/access-token}{+path}';
 
+  /**
+   * @var mixed
+   */
   public $date;
 
+  /**
+   * @param array $params
+   *
+   * @return Parameters
+   */
   public function parameters(array $params) {
     return new Parameters($params);
   }
@@ -88,14 +93,14 @@ class Client extends HttpClient {
     parent::__construct($config);
   }
 
-    /**
-     * Used by controllers to get a new request, or revert to parent http client if no method is specified.
-     *
-     * @param null $method
-     * @param string $uri
-     * @param array $options
-     * @return mixed|\Psr\Http\Message\ResponseInterface|Request
-     */
+  /**
+   * Used by controllers to get a new request, or revert to parent http client if no method is specified.
+   *
+   * @param null $method
+   * @param string $uri
+   * @param array $options
+   * @return mixed|\Psr\Http\Message\ResponseInterface|Request
+   */
   public function request($method = NULL, $uri = '', array $options = []) {
     if (is_null($method)) {
       return $this->createRequest();
@@ -103,25 +108,25 @@ class Client extends HttpClient {
     return parent::request($method, $uri, $options);
   }
 
-    /**
-     * Helper method for ::request()
-     *
-     * @return Request
-     */
+  /**
+   * Helper method for ::request()
+   *
+   * @return Request
+   */
   protected function createRequest() {
     return new Request($this);
   }
 
-    /**
-     * @return UriTemplate
-     */
+  /**
+   * @return UriTemplate
+   */
   public function template() {
     return new UriTemplate();
   }
 
-    /**
-     * @return Parameters
-     */
+  /**
+   * @return Parameters
+   */
   public function params() {
     return $this->params;
   }
@@ -153,10 +158,16 @@ class Client extends HttpClient {
     return $this->uri;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function get($path, Parameters $config) {
     return parent::get($path, $config->toArray());
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function post($path, Parameters $config) {
     return parent::post($path, $config->toArray());
   }
