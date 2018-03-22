@@ -28,4 +28,15 @@ class ControllerBase {
   public function __construct(Client $client) {
     $this->client = $client;
   }
+
+  /**
+   * Return a url encoded string.
+   *
+   * @param $string
+   * @return string
+   */
+  protected function encode($string) {
+    return urlencode($string);
+  }
+
 }
