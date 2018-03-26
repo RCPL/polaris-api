@@ -92,4 +92,9 @@ class Patron extends ControllerBase {
     return $this->request->path($endpoint)->simple('PatronAccountTitleListsRows')->send();
   }
 
+  public function fines() {
+    $endpoint = 'patron/' . $this->barcode  . '/account/outstanding';
+    return $this->request->path($endpoint)->simple('PatronAccountGetRows')->send();
+  }
+
 }
