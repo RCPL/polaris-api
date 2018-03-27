@@ -46,7 +46,7 @@ class Patron extends ControllerBase {
       ->token()
       ->get()
       ->path('search/patrons/boolean')
-      ->query(['q' => $patron_barcode])
+      ->query(['q' => 'PATB=' . $patron_barcode])
       ->send();
   }
 
