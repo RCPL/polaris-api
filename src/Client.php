@@ -143,12 +143,32 @@ class Client extends HttpClient {
     if (isset($this->{$name})) {
       return $this->{$name};
     }
-    if (class_exists('\RCPL\Polaris\Controller\\' . $class)) {
-      $class = '\RCPL\Polaris\Controller\\' . $class;
-      $this->{$name} = new $class($this);
-      return $this->{$name};
+    if ($class = $this->getControllerClass($name)) {
+      return $this->setControllerClass($name, $class);
     }
     return FALSE;
+  }
+
+  /**
+   * @param $name
+   * @param $class
+   * @return bool
+   */
+  protected function setControllerClass($name, $class) {
+    $this->{$name} = new $class($this);
+    return $this->{$name};
+  }
+
+  /**
+   * @param $name
+   * @return bool|string
+   */
+  protected function getControllerClass($name) {
+    $class = FALSE;
+    if (class_exists('\RCPL\Polaris\Controller\\' . $name)) {
+      $class = '\RCPL\Polaris\Controller\\' . $name;
+    }
+    return $class;
   }
 
   /**
