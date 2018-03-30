@@ -40,9 +40,25 @@ $result = $client->patron->search($patron_barcode);
 Kint::dump($result);
 
 // Try putting something on hold.
-/*print '<h2>4) Put a copy of Harry Potter on request using HoldRequestCreate</h2>';
+print '<h2>4) Put a copy of Harry Potter on request using HoldRequestCreate</h2>';
 $bib_id = 682052; // The bib id for the item in question. e.g., see $result->BibSearchRows[0]->ControlNumber from example 1.
 $location_code = 3; // Branch location to send the item to. See $result->PatronSearchRows[0]->OrganizationID from example 3.
 $patron_id = 172338; // Customer's "patron ID". See $result->PatronSearchRows[0]->PatronID from example 3.
-$result = PolarisAPI::createHoldRequest($bib_id, $location_code, $patron_id);
-display_result($result);*/
+
+$patron = $client->patron->get($patron_id);
+
+// Get list of all hold request objects keyed by request ID.
+Kint::dump($patron->holdRequests('all'));
+
+// Load a specific hold request object by request ID.
+$hold = $patron->holdrequest->get('2966399');
+
+// Activate a currently suspended hold request.
+$hold->activate();
+
+// Suspend a current active hold request until [php date time period experession http://php.net/manual/fr/dateinterval.construct.php].
+$hold->suspendUntil('P20D');
+
+// Create a new hold request.
+$hold = $patron->holdrequest->create(['BibID' => $bib_id]);
+$hold->save();

@@ -12,6 +12,8 @@ class Patron extends ControllerBase {
 
   public $barcode;
 
+  private $holdRequestController;
+
   public function __construct(Client $client, $patron_barcode = NULL) {
     $this->barcode = $patron_barcode;
     parent::__construct($client);
@@ -35,6 +37,9 @@ class Patron extends ControllerBase {
   public function __get($key) {
     if ($this->isUpdateable($key) && isset($this->updateable[$key])) {
       return $this->updateable[$key];
+    }
+    if (strtolower($key) == 'holdrequest') {
+      return $this->getHoldRequestController();
     }
     return FALSE;
   }
@@ -85,9 +90,15 @@ class Patron extends ControllerBase {
     return $this->request->path($endpoint)->query($query)->simple('PatronBasicData')->send();
   }
 
+  private function getHoldRequestController() {
+    if (!isset($this->holdRequestController)) {
+      $this->holdRequestController = $this->client->holdrequest->init($this);
+    }
+    return $this->holdRequestController;
+  }
+
   public function holdRequests($type = 'all') {
-    $endpoint = 'patron/' . $this->barcode  . '/holdrequests/' . $type;
-    return $this->request->path($endpoint)->simple('PatronHoldRequestsGetRows')->send();
+    return $this->getHoldRequestController()->getByType($type);
   }
 
   public function itemsOut($type = 'all') {
