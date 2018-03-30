@@ -8,6 +8,10 @@ class Patron extends ControllerBase {
 
   private $request;
 
+  private $updateable = [];
+
+  public $barcode;
+
   public function __construct(Client $client, $patron_barcode = NULL) {
     $this->barcode = $patron_barcode;
     parent::__construct($client);
@@ -19,6 +23,20 @@ class Patron extends ControllerBase {
 
   public function get($patron_barcode) {
     return new static($this->client, $patron_barcode);
+  }
+
+  public function __set($key, $value) {
+    if ($this->isUpdateable($key)) {
+      $this->updateable[$key] = $value;
+    }
+    return FALSE;
+  }
+
+  public function __get($key) {
+    if ($this->isUpdateable($key) && isset($this->updateable[$key])) {
+      return $this->updateable[$key];
+    }
+    return FALSE;
   }
 
   public function authenticate($password) {
@@ -127,4 +145,58 @@ class Patron extends ControllerBase {
     return $this->request->path($endpoint)->simple('PatronAccountGetRows')->send();
   }
 
+  public function update() {
+    $values = array_filter(array_merge($this->updateable(), $this->updateable));
+    $endpoint = 'patron/' . $this->barcode;
+    return $this->client->request()
+      ->public()
+      ->path($endpoint)
+      ->staff()
+      ->config([
+        'json' => $values,
+      ])
+      ->put()
+      ->send();
+  }
+
+  private function isUpdateable($key) {
+    return array_key_exists($key, $this->updateable());
+  }
+
+  private function updateable() {
+    return [
+      'LogonBranchID'                     => 1,
+      'LogonUserID'                       => 1,
+      'LogonWorkstationID'                => 1,
+      'ReadingListFlag'                   => NULL,
+      'EmailFormat'                       => NULL,
+      'DeliveryOptionID'                  => NULL,
+      'EmailAddress'                      => NULL,
+      'PhoneVoice1'                       => NULL,
+      'Password'                          => NULL,
+      'AltEmailAddress'                   => NULL,
+      'EnableSMS'                         => NULL,
+      'PhoneVoice2'                       => NULL,
+      'PhoneVoice3'                       => NULL,
+      'Phone1CarrierID'                   => NULL,
+      'Phone2CarrierID'                   => NULL,
+      'Phone3CarrierID'                   => NULL,
+      'TxtPhoneNumber'                    => NULL,
+      'EReceiptOptionID'                  => NULL,
+      'ExcludeFromAlmostOverdueAutoRenew' => NULL,
+      'ExcludeFromPatronRecExpiration'    => NULL,
+      'ExcludeFromInactivePatron'         => NULL,
+      'ExpirationDate'                    => NULL,
+      'AddrCheckDate'                     => NULL,
+      'PatronCode'                        => NULL,
+      'AddressID'                         => NULL,
+      'FreeTextLabel'                     => NULL,
+      'StreetOne'                         => NULL,
+      'State'                             => NULL,
+      'County'                            => NULL,
+      'PostalCode'                        => NULL,
+      'Country'                           => NULL,
+      'AddressTypeID'                     => NULL,
+    ];
+  }
 }
