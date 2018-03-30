@@ -106,6 +106,11 @@ class Request {
     return $this;
   }
 
+  public function put() {
+    $this->method = 'PUT';
+    return $this;
+  }
+
   /**
    * @return $this
    */

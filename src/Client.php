@@ -186,6 +186,10 @@ class Client extends HttpClient {
     return parent::get($path, $config->toArray());
   }
 
+  public function put($path, Parameters $config) {
+    return parent::put($path, $config->toArray());
+  }
+
   /**
    * {@inheritdoc}
    */
