@@ -105,6 +105,7 @@ class Client extends HttpClient {
     if (is_null($method)) {
       return $this->createRequest();
     }
+    //$options['debug'] = TRUE; // Guzzle debugging.
     return parent::request($method, $uri, $options);
   }
 
@@ -190,6 +191,13 @@ class Client extends HttpClient {
    */
   public function post($path, Parameters $config) {
     return parent::post($path, $config->toArray());
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function delete($path, Parameters $config) {
+    return parent::delete($path, $config->toArray());
   }
 
   /**

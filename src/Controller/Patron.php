@@ -34,7 +34,7 @@ class Patron extends ControllerBase {
     return $this->client->request()
       ->public()
       ->staff()
-      ->path('authenticator/patron')
+      ->path($endpoint)
       ->config($config)
       ->post()
       ->send();
@@ -90,6 +90,36 @@ class Patron extends ControllerBase {
   public function titleLists() {
     $endpoint = 'patron/' . $this->barcode . '/patronaccountgettitlelists';
     return $this->request->path($endpoint)->simple('PatronAccountTitleListsRows')->send();
+  }
+
+  public function titleListCreate($list_name) {
+    $endpoint = 'patron/' . $this->barcode . '/patronaccountcreatetitlelist';
+    $config = [
+      'json' => [
+        'RecordStoreName' => $list_name,
+      ],
+    ];
+    return $this->client->request()
+      ->public()
+      ->staff()
+      ->path($endpoint)
+      ->config($config)
+      ->post()
+      ->send();
+  }
+
+  public function titleListDelete($list_id) {
+    $endpoint = 'patron/' . $this->barcode . '/patronaccountdeletetitlelist';
+    $query = [
+      'list' => $list_id
+    ];
+    return $this->client->request()
+      ->public()
+      ->staff()
+      ->path($endpoint)
+      ->query($query)
+      ->delete()
+      ->send();
   }
 
   public function fines() {

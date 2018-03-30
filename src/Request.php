@@ -115,6 +115,14 @@ class Request {
   }
 
   /**
+   * @return $this
+   */
+  public function delete() {
+    $this->method = 'DELETE';
+    return $this;
+  }
+
+  /**
    * @param string $path
    *
    * @return $this
