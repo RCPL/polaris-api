@@ -62,3 +62,11 @@ $hold->suspendUntil('P20D');
 // Create a new hold request.
 $hold = $patron->holdrequest->create(['BibID' => $bib_id]);
 $hold->save();
+
+// Update Patron information.
+print '<h2>5) Update Patron information</h2>';
+
+$patron_id = 172338;
+$patron = $client->patron->get($patron_id);
+$patron->PhoneVoice2 = '123-456-7890';
+$patron->update();
