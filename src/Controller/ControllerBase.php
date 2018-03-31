@@ -30,6 +30,13 @@ class ControllerBase {
   }
 
   /**
+   * @return Client
+   */
+  public function client() {
+    return $this->client;
+  }
+
+  /**
    * Return a url encoded string.
    *
    * @param $string
@@ -39,4 +46,10 @@ class ControllerBase {
     return urlencode($string);
   }
 
+  /**
+   * Form the common endpoint for a request.
+   */
+  public function url() {
+    return '';
+  }
 }
