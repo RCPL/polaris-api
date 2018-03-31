@@ -38,7 +38,7 @@ class Bibliography extends ControllerBase {
    * @param string $qualifier_name
    *   KW|TI|AU|SU|NOTE|PUB|GENRE|SE|ISBN|ISSN|LCCN|PN|LC|DD|LOCAL|SUDOC|CODEN|STRN|CN|BC
    */
-  public function search($text, array $params = [], $qualifier_name = 'keyword/au') {
+  public function search($text, array $params = [], $qualifier_name = 'keyword/ti') {
     $endpoint = 'search/bibs/' . $qualifier_name;
     $params['q'] = $this->encode($text);
     return $this->client->request()
