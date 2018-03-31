@@ -3,6 +3,8 @@
 namespace RCPL\Polaris\Controller;
 
 use RCPL\Polaris\Client;
+use RCPL\Polaris\Entity\HoldRequest as Entity;
+use RCPL\Polaris\Entity\Patron as Patron;
 
 class HoldRequest extends ControllerBase {
 
@@ -10,20 +12,22 @@ class HoldRequest extends ControllerBase {
 
   private $patron;
 
-  private $holdData = [];
-
-  public function __construct(Client $client, Patron $patron = NULL, array $values = []) {
+  public function __construct(Client $client) {
     parent::__construct($client);
-    if (!is_null($patron)) {
-      $this->patron = $patron;
-    }
-    if (!empty($values)) {
-      $this->holdData = $values;
-    }
   }
 
-  public function init(Patron $patron, array $values = []) {
-    return new static($this->client, $patron, $values);
+  public function init(Patron $patron) {
+    $instance = new static($this->client);
+    return $instance->setPatron($patron);
+  }
+
+  public function setPatron(Patron $patron) {
+    $this->patron = $patron;
+    return $this;
+  }
+
+  public function url() {
+    return $this->patron->url() . '/holdrequests';
   }
 
   public function create(array $values = []) {
@@ -47,21 +51,20 @@ class HoldRequest extends ControllerBase {
       'RequestingOrgID' => 1,
       'TargetGUID'      => '',
     ], $values);
-    return new static($this->client, $this->patron, $values);
+    return new Entity($this, $values);
   }
 
   public function getByType($type = 'all') {
     if (!isset($this->controllerData[$type])) {
-      $endpoint = 'patron/' . $this->patron->barcode  . '/holdrequests/' . $type;
       $result = $this->client->request()
         ->staff()
         ->public()
         ->get()
         ->simple('PatronHoldRequestsGetRows')
-        ->path($endpoint)
+        ->path($this->url() . '/' . $type)
         ->send();
       foreach ($result as $hold) {
-        $this->controllerData[$type][$hold->HoldRequestID] = $this->init($this->patron, (array) $hold);
+        $this->controllerData[$type][$hold->HoldRequestID] = $this->create((array) $hold);
       }
     }
     return $this->controllerData[$type];
@@ -71,51 +74,4 @@ class HoldRequest extends ControllerBase {
     return isset($this->controllerData[$type][$id]) ? $this->controllerData[$type][$id] : FALSE;
   }
 
-  public function suspendUntil($int = 'P1D', array $values = []) {
-    $date = new \DateTime();
-    $date->add(new \DateInterval($int));
-    $this->suspend($date, $values);
-  }
-
-  public function activate(array $values = []) {
-    $date = new \DateTime();
-    $date->add(new \DateInterval('PT1S'));
-    return $this->changeStatus('active', $date, $values); 
-  }
-
-  public function suspend(\DateTime $date, array $values = []) {
-    return $this->changeStatus('inactive', $date, $values);
-  }
-
-  private function changeStatus($status, \DateTime $date, array $values = []) {
-    $endpoint = 'patron/' . $this->patron->barcode 
-      . '/holdrequests/' 
-      . $this->holdData['HoldRequestID'] 
-      . '/' . $status;
-    return $this->client->request()
-      ->public()
-      ->staff()
-      ->config([
-        'json' => [
-          'UserID' => 1,
-          'ActivationDate' => $date->format(\DateTime::ISO8601),
-        ]
-      ])
-      ->path($endpoint)
-      ->put()
-      ->send();
-  }
-
-  public function save() {
-    if (!empty($this->holdData['HoldRequestID'])) {
-      return;
-    }
-    return $this->client->request()
-      ->config(['json' => $this->holdData])
-      ->public()
-      ->post()
-      ->path('holdrequest')
-      ->staff()
-      ->send();
-  }
 }
