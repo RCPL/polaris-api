@@ -8,12 +8,26 @@ class Bibliography extends ControllerBase {
 
   private $id;
 
-  public function __construct(Client $client, $id = NULL) {
-    $this->id = $id;
+  public function __construct(Client $client, $id = NULL, array $data = []) {
     parent::__construct($client);
+    $this->id = $id;
+    $this->setData($data);
   }
+
   public function get($id) {
-    return new static($this->client, $id);
+    $data = $this->client->request()
+      ->public()
+      ->get()
+      ->path('bib/' . $id)
+      ->simple('BibGetRows')
+      ->send();
+    return new static($this->client, $id, $data);
+  }
+
+  private function setData(array $data = []) {
+    foreach ($data as $row) {
+      $this->data[$row->ElementID] = $row;
+    }
   }
 
   /**
@@ -38,13 +52,6 @@ class Bibliography extends ControllerBase {
 
   public function holdings() {
     $endpoint = 'bib/' . $this->id . '/holdings';
-    return $this->request($endpoint);
-  }
-
-  /**
-   * TODO: Refactor this to be in a parent class.
-   */
-  private function request($endpoint, array $query = []) {
     return $this->client->request()
       ->staff()
       ->public()
