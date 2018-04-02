@@ -129,6 +129,7 @@ class Patron extends EntityBase {
       ->path($endpoint)
       ->config($config)
       ->post()
+      ->simple('AccessToken')
       ->send();
   }
 

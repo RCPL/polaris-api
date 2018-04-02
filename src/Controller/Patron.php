@@ -10,7 +10,18 @@ class Patron extends ControllerBase {
   private $updateable = [];
 
   public function get($patron_barcode) {
-    return new Entity($this, $patron_barcode);
+    return $this->validate($patron_barcode) ? new Entity($this, $patron_barcode) : FALSE;
+  }
+
+  public function validate($patron_barcode) {
+    $request = $this->client->request()
+      ->public()
+      ->get()
+      ->staff()
+      ->path('patron/' . $patron_barcode)
+      ->send();
+    // TODO: Initialize Patron object with PatronID.
+    return $request->ValidPatron ? $request->PatronID : FALSE; 
   }
 
   public function search($patron_barcode) {
