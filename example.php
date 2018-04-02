@@ -71,3 +71,90 @@ $patron_id = 172338;
 $patron = $client->patron->get($patron_id);
 $patron->PhoneVoice2 = '123-456-7890';
 $patron->update();
+
+// Get a list of fines for a customer.
+print '<h2>6) Get a list of fines for a customer using PatronAccountGet</h2>';
+$patron_barcode = 20080104020258; // Customer's library card number
+$patron = $client->patron->get($patron_barcode);
+$result = $patron->fines();
+Kint::dump($result);
+
+// Get a list of items out for a customer.
+print '<h2>7) Get a list of items out for a customer using PatronAccountGet</h2>';
+$patron_barcode = 20080104020258; // Customer's library card number
+$patron = $client->patron->get($patron_barcode);
+$result = $patron->itemsOut();
+Kint::dump($result);
+
+// Get a list of lists for a customer.
+print '<h2>8) Get a list of lists for a customer using PatronAccountGetTitleLists</h2>';
+$patron_barcode = 20080104020258; // Customer's library card number
+$patron = $client->patron->get($patron_barcode);
+$result = $patron->titlelist->getLists();
+Kint::dump($result);
+
+// Create a list for a customer.
+print '<h2>9) Create a list for a customer using PatronAccountCreateTitleList</h2>';
+$patron_barcode = 20080104020258; // Customer's library card number
+$patron = $client->patron->get($patron_barcode);
+$result = $patron->titlelist->create('testmjarrell-' . strtotime('now'));
+Kint::dump($result);
+
+// Delete a list for a customer.
+print '<h2>10) Delete a list for a customer using PatronAccountDeleteTitleList</h2>';
+$patron_barcode = 20080104020258; // Customer's library card number
+$list_id = 159834;
+$patron = $client->patron->get($patron_barcode);
+$result = $patron->titlelist->delete($list_id);
+Kint::dump($result);
+
+// Get a list of titles in a list for a customer.
+print '<h2>11) Get a list of titles in a list for a customer using PatronTitleListGetTitles</h2>';
+$patron_barcode = 20080104020258; // Customer's library card number
+$patron = $client->patron->get($patron_barcode);
+$result = $patron->titlelist->getTitles(1776);
+Kint::dump($result);
+
+// Add an item to a list for a customer.
+print '<h2>12) Add an item to a list for a customer using PatronTitleListAddTitle</h2>';
+$patron_barcode = 20080104020258; // Customer's library card number
+$patron = $client->patron->get($patron_barcode);
+$result = $patron->titlelist->addTitle(1776, 1475253);
+Kint::dump($result);
+
+// Delete an item from a list for a customer.
+print '<h2>13) Delete an item from a list for a customer using PatronTitleListDeleteTitle</h2>';
+$position_id = 6; // Position of the item in the list. See $result[0]->Position from example 11.
+$patron_barcode = 20080104020258; // Customer's library card number
+$patron = $client->patron->get($patron_barcode);
+$result = $patron->titlelist->deleteTitle(1776, $position_id);
+Kint::dump($result);
+
+// Delete all titles from a list for a customer.
+print '<h2>14) Delete all titles from a list for a customer using PatronTitleListDeleteAllTitles</h2>';
+$patron_barcode = 20080104020258; // Customer's library card number
+$list_id = 9634;
+$patron = $client->patron->get($patron_barcode);
+$result = $patron->titlelist->deleteAllTitles($list_id);
+Kint::dump($result);
+
+// Move a title from one list to another.
+print '<h2>15) Move a title from one list to another using PatronTitleListMoveTitle</h2>';
+$patron_barcode = 20080104020258; // Customer's library card number
+$patron = $client->patron->get($patron_barcode);
+$result = $patron->titlelist->moveTitle(1776, 5, 159835);
+Kint::dump($result);
+
+// Copy a title from one list to another.
+print '<h2>16) Copy a title from one list to another using PatronTitleListCopyTitle</h2>';
+$patron_barcode = 20080104020258; // Customer's library card number
+$patron = $client->patron->get($patron_barcode);
+$result = $patron->titlelist->copyTitle(159835, 1, 1776);
+Kint::dump($result);
+
+// Copy all titles from one list to another.
+print '<h2>17) Copy all titles from one list to another using PatronTitleListCopyAllTitles</h2>';
+$patron_barcode = 20080104020258; // Customer's library card number
+$patron = $client->patron->get($patron_barcode);
+$result = $patron->titlelist->copyAllTitles(1776, 159835);
+Kint::dump($result);

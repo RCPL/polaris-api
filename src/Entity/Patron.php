@@ -35,6 +35,11 @@ class Patron extends EntityBase {
   private $holdRequestController;
 
   /**
+   * @var \RCPL\Polaris\Controller\TitleList
+   */
+  private $titleListController;
+
+  /**
    * {@inheritdoc}
    */
   public function __construct(Controller $controller, $patron_barcode) {
@@ -68,6 +73,20 @@ class Patron extends EntityBase {
   }
 
   /**
+   * Do not use directly, use $this->titlelist.
+   *
+   * @see $this->__get()
+   *
+   * @return \RCPL\Polaris\Controller\TitleList
+   */
+  protected function titleListController() {
+    if (!isset($this->titleListController)) {
+      $this->titleListController = $this->client->titlelist->init($this);
+    }
+    return $this->titleListController;
+  }
+
+  /**
    * Populate updateable Patron data.
    *
    * @param $key
@@ -87,6 +106,9 @@ class Patron extends EntityBase {
     }
     if (strtolower($key) == 'holdrequest') {
       return $this->holdRequestController();
+    }
+    if (strtolower($key) == 'titlelist') {
+      return $this->titleListController();
     }
     return FALSE;
   }
@@ -141,40 +163,6 @@ class Patron extends EntityBase {
 
   public function account() {
     return $this->request->path($this->url()  . '/account/outstanding')->simple('PatronAccountGetRows')->send();
-  }
-
-  public function titleLists() {
-    return $this->request->path($this->url() . '/patronaccountgettitlelists')->simple('PatronAccountTitleListsRows')->send();
-  }
-
-  public function titleListCreate($list_name) {
-    $endpoint = 'patron/' . $this->barcode . '/patronaccountcreatetitlelist';
-    $config = [
-      'json' => [
-        'RecordStoreName' => $list_name,
-      ],
-    ];
-    return $this->client->request()
-      ->public()
-      ->staff()
-      ->path($endpoint)
-      ->config($config)
-      ->post()
-      ->send();
-  }
-
-  public function titleListDelete($list_id) {
-    $endpoint = 'patron/' . $this->barcode . '/patronaccountdeletetitlelist';
-    $query = [
-      'list' => $list_id
-    ];
-    return $this->client->request()
-      ->public()
-      ->staff()
-      ->path($endpoint)
-      ->query($query)
-      ->delete()
-      ->send();
   }
 
   public function fines() {
