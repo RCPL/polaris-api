@@ -112,14 +112,15 @@ Kint::dump($result);
 print '<h2>11) Get a list of titles in a list for a customer using PatronTitleListGetTitles</h2>';
 $patron_barcode = 20080104020258; // Customer's library card number
 $patron = $client->patron->get($patron_barcode);
-$result = $patron->titlelist->getTitles(1776);
+$result = $patron->titlelist->get(1776)->getTitles();
 Kint::dump($result);
 
 // Add an item to a list for a customer.
 print '<h2>12) Add an item to a list for a customer using PatronTitleListAddTitle</h2>';
 $patron_barcode = 20080104020258; // Customer's library card number
 $patron = $client->patron->get($patron_barcode);
-$result = $patron->titlelist->addTitle(1776, 1475253);
+$result = $patron->titlelist->get(1776)->addTitle(1475253);
+// Or alternatively use titlelist->getByName('list-name')
 Kint::dump($result);
 
 // Delete an item from a list for a customer.
@@ -127,7 +128,7 @@ print '<h2>13) Delete an item from a list for a customer using PatronTitleListDe
 $position_id = 6; // Position of the item in the list. See $result[0]->Position from example 11.
 $patron_barcode = 20080104020258; // Customer's library card number
 $patron = $client->patron->get($patron_barcode);
-$result = $patron->titlelist->deleteTitle(1776, $position_id);
+$result = $patron->titlelist->get(1776)->deleteTitle($position_id);
 Kint::dump($result);
 
 // Delete all titles from a list for a customer.
@@ -142,19 +143,19 @@ Kint::dump($result);
 print '<h2>15) Move a title from one list to another using PatronTitleListMoveTitle</h2>';
 $patron_barcode = 20080104020258; // Customer's library card number
 $patron = $client->patron->get($patron_barcode);
-$result = $patron->titlelist->moveTitle(1776, 5, 159835);
+$result = $patron->titlelist->get(1776)->moveTitle(5, 159835);
 Kint::dump($result);
 
 // Copy a title from one list to another.
 print '<h2>16) Copy a title from one list to another using PatronTitleListCopyTitle</h2>';
 $patron_barcode = 20080104020258; // Customer's library card number
 $patron = $client->patron->get($patron_barcode);
-$result = $patron->titlelist->copyTitle(159835, 1, 1776);
+$result = $patron->titlelist->get(159835)->copyTitle(1, 1776);
 Kint::dump($result);
 
 // Copy all titles from one list to another.
 print '<h2>17) Copy all titles from one list to another using PatronTitleListCopyAllTitles</h2>';
 $patron_barcode = 20080104020258; // Customer's library card number
 $patron = $client->patron->get($patron_barcode);
-$result = $patron->titlelist->copyAllTitles(1776, 159835);
+$result = $patron->titlelist->get(1776)->copyAllTitles(159835);
 Kint::dump($result);
