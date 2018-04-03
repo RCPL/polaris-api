@@ -154,6 +154,10 @@ class Patron extends EntityBase {
     return $this->holdRequest->getByType($type);
   }
 
+  public function titleLists() {
+    return $this->titlelist->getLists();
+  }
+
   public function itemsOut($type = 'all') {
     return $this->request->path($this->url()  . '/itemsout/' . $type)->simple('PatronItemsOutGetRows')->send();
   }

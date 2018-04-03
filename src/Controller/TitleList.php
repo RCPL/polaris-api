@@ -3,47 +3,45 @@
 namespace RCPL\Polaris\Controller;
 
 use RCPL\Polaris\Client;
-//use RCPL\Polaris\Entity\TitleList as Entity;
-use RCPL\Polaris\Entity\Patron as Patron;
+use RCPL\Polaris\Entity\TitleList as Entity;
+use RCPL\Polaris\PatronAwareTrait;
 
 /**
  * Actions for creating/removing hold requests for customers.
  */
 class TitleList extends ControllerBase {
 
-  private $controllerData = [];
+  use PatronAwareTrait;
 
-  private $patron;
-
-  public function __construct(Client $client) {
-    parent::__construct($client);
-  }
-
-  public function init(Patron $patron) {
-    $instance = new static($this->client);
-    return $instance->setPatron($patron);
-  }
-
-  public function setPatron(Patron $patron) {
-    $this->patron = $patron;
-    return $this;
-  }
+  private $data;
 
   public function url() {
     return $this->patron->url();
+  }
+
+  public function get($id) {
+    $data = $this->getLists();
+    return !isset($data[$id]) ? $data[$id] : FALSE;
   }
 
   /**
    * Gets a list of all of a particular customer's lists.
    */
   public function getLists() {
-    return $this->client->request()
-      ->staff()
-      ->public()
-      ->get()
-      ->path($this->url() . '/patronaccountgettitlelists')
-      ->simple('PatronAccountTitleListsRows')
-      ->send();
+    if (!isset($this->data)) {
+      $this->data = [];
+      $result = $this->client->request()
+        ->staff()
+        ->public()
+        ->get()
+        ->path($this->url() . '/patronaccountgettitlelists')
+        ->simple('PatronAccountTitleListsRows')
+        ->send();
+      foreach ($result as $list) {
+        $this->data[$list->RecordStoreID] = new Entity($this, (array) $list);
+      }
+    }
+    return $this->data;
   }
 
   /**
@@ -56,13 +54,25 @@ class TitleList extends ControllerBase {
         'RecordStoreName' => $list_name,
       ],
     ];
-    return $this->client->request()
+    $response = $this->client->request()
       ->public()
       ->staff()
       ->path($endpoint)
       ->config($config)
       ->post()
       ->send();
+    if ($response->PAPIErrorCode === 0) {
+      $this->getLists();
+      return $this->getByName($list_name);
+    }
+    return FALSE;
+  }
+
+  public function getByName($list_name) {
+    $filter = array_filter($this->getLists(), function($list) use ($list_name) {
+      return $list->name() == $list_name;
+    });
+    return !empty($filter) ? reset($filter) : FALSE;
   }
 
   /**
@@ -73,6 +83,7 @@ class TitleList extends ControllerBase {
     $query = [
       'list' => $list_id
     ];
+    unset($this->data[$list_id]);
     return $this->client->request()
       ->public()
       ->staff()
