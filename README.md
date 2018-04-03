@@ -58,6 +58,12 @@ If you discover one of these that's incomplete that you need help with please
 either A) contribute using the method outlined below or B) open an issue on
 the Github issue queue and request support with it.
 
+## Advanced Usage
+
+* [Patron](docs/PATRON.md)
+* [Patron - Hold Requests](docs/PATRON-HOLDREQUESTS.md)
+* [Bibliography](docs/BIB.md)
+
 ## Contributing
 1. Fork it!
 2. Create your feature branch: `git checkout -b my-new-feature`
