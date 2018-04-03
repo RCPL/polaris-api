@@ -4,26 +4,16 @@ namespace RCPL\Polaris\Controller;
 
 use RCPL\Polaris\Client;
 use RCPL\Polaris\Entity\HoldRequest as Entity;
-use RCPL\Polaris\Entity\Patron as Patron;
+use RCPL\Polaris\PatronAwareTrait;
 
 class HoldRequest extends ControllerBase {
 
-  private $controllerData = [];
+  use PatronAwareTrait;
 
-  private $patron;
+  private $data = [];
 
   public function __construct(Client $client) {
     parent::__construct($client);
-  }
-
-  public function init(Patron $patron) {
-    $instance = new static($this->client);
-    return $instance->setPatron($patron);
-  }
-
-  public function setPatron(Patron $patron) {
-    $this->patron = $patron;
-    return $this;
   }
 
   public function url() {
@@ -55,7 +45,7 @@ class HoldRequest extends ControllerBase {
   }
 
   public function getByType($type = 'all') {
-    if (!isset($this->controllerData[$type])) {
+    if (!isset($this->data[$type])) {
       $result = $this->client->request()
         ->staff()
         ->public()
@@ -64,14 +54,14 @@ class HoldRequest extends ControllerBase {
         ->path($this->url() . '/' . $type)
         ->send();
       foreach ($result as $hold) {
-        $this->controllerData[$type][$hold->HoldRequestID] = $this->create((array) $hold);
+        $this->data[$type][$hold->HoldRequestID] = $this->create((array) $hold);
       }
     }
-    return $this->controllerData[$type];
+    return $this->data[$type];
   }
 
   public function get($id, $type = 'all') {
-    return isset($this->controllerData[$type][$id]) ? $this->controllerData[$type][$id] : FALSE;
+    return isset($this->data[$type][$id]) ? $this->data[$type][$id] : FALSE;
   }
 
 }
