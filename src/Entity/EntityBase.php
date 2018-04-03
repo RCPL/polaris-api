@@ -40,4 +40,11 @@ class EntityBase {
     return $this->controller->url();
   }
 
-} 
+  /**
+   * @return object
+   */
+  public function getData() {
+    return (object) $this->data;
+  }
+
+}
