@@ -32,7 +32,7 @@ class HoldRequest extends EntityBase {
     $date = new \DateTime();
     // Any time in the future is ok, so we set this to 1 second.
     $date->add(new \DateInterval('PT1S'));
-    return $this->changeStatus('active', $date, $values); 
+    return $this->changeStatus('active', $date, $values);
   }
 
   public function suspend(\DateTime $date, array $values = []) {
@@ -44,8 +44,7 @@ class HoldRequest extends EntityBase {
     return $this->client->request()
       ->public()
       ->put()
-      // TODO: This should be configurable.
-      ->query(['wsid' => 1, 'userid' => 1])
+      ->query(['wsid' => $this->client->params->get('WORKSTATION_ID'), 'userid' => 1])
       ->path($endpoint)
       ->staff()
       ->send();

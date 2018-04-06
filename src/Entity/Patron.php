@@ -191,7 +191,7 @@ class Patron extends EntityBase {
 
   public function itemCheckout() {
     $query = [
-      'wsid' => 1,
+      'wsid' => $this->client->params->get('WORKSTATION_ID'),
       'userid' => 1,
     ];
     $data = [

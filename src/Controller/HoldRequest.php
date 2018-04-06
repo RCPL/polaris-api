@@ -36,7 +36,7 @@ class HoldRequest extends ControllerBase {
       'ActivationDate'  => '/Date(' . date('Y-m-d\T') . '00:00:00.00)/',
       'Answer'          => '',
       'RequestID'       => '',
-      'WorkstationID'   => 1,
+      'WorkstationID'   => $this->client->params->get('WORKSTATION_ID'),
       'UserID'          => 1,
       'RequestingOrgID' => 1,
       'TargetGUID'      => '',

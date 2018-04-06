@@ -21,7 +21,7 @@ class Patron extends ControllerBase {
       ->path('patron/' . $patron_barcode)
       ->send();
     // TODO: Initialize Patron object with PatronID.
-    return $request->ValidPatron ? $request->PatronID : FALSE; 
+    return $request->ValidPatron ? $request->PatronID : FALSE;
   }
 
   public function search($patron_barcode) {
@@ -42,7 +42,7 @@ class Patron extends ControllerBase {
     return [
       'LogonBranchID'                     => 1,
       'LogonUserID'                       => 1,
-      'LogonWorkstationID'                => 1,
+      'LogonWorkstationID'                => $this->client->params->get('WORKSTATION_ID'),
       'ReadingListFlag'                   => NULL,
       'EmailFormat'                       => NULL,
       'DeliveryOptionID'                  => NULL,
