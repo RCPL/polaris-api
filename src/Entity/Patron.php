@@ -218,4 +218,24 @@ class Patron extends EntityBase {
       ->send();
   }
 
+  public function itemRenew($item_id) {
+    $renewdata = new \stdClass();
+    $renewdata->IgnoreOverrideErrors = TRUE;
+    return $this->client->request()
+      ->public()
+      ->staff()
+      ->config([
+        'json' => [
+          'Action' => 'renew',
+          'LogonBranchID' => 1,
+          'LogonUserID' => 1,
+          'LogonWorkstationID' => $this->client->params->get('WORKSTATION_ID'),
+          'RenewData' => $renewdata,
+        ]
+      ])
+      ->path($this->url()  . '/itemsout/' . $item_id)
+      ->put()
+      ->send();
+  }
+
 }

@@ -165,3 +165,12 @@ print '<h2>18) Pull a Polaris recordset of titles using BibSearch</h2>';
 $recordset_id = 60628;
 $result = $client->bibliography->search('BRS=' . $recordset_id, [], 'boolean');
 Kint::dump($result);
+
+// Renew a checked out item for a customer.
+// Renew ALL items for a patron by passing 0 instead of an item id.
+print '<h2>19) Renew a checked out item for a customer using ItemRenew</h2>';
+$patron_barcode = 20080104453178; // Customer's library card number
+$item_id = 1885420;
+$patron = $client->patron->get($patron_barcode);
+$result = $patron->itemRenew($item_id);
+Kint::dump($result);
