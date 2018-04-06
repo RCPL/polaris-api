@@ -43,6 +43,7 @@ $client = new Client([
   'STAFF_ID'       => '< your info here >',
   'STAFF_USERNAME' => '< your info here >',
   'STAFF_PASSWORD' => '< your info here >',
+  'WORKSTATION_ID' => '< your info here >'
 ]);
 
 $patron = $client->patron->get('< library card number >');
