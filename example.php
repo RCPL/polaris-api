@@ -159,3 +159,9 @@ $patron_barcode = 20080104020258; // Customer's library card number
 $patron = $client->patron->get($patron_barcode);
 $result = $patron->titlelist->get(1776)->copyAllTitles(159835);
 Kint::dump($result);
+
+// Get the list of items from a Polaris recordset.
+print '<h2>18) Pull a Polaris recordset of titles using BibSearch</h2>';
+$recordset_id = 60628;
+$result = $client->bibliography->search('BRS=' . $recordset_id, [], 'boolean');
+Kint::dump($result);

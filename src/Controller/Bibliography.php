@@ -41,6 +41,10 @@ class Bibliography extends ControllerBase {
   public function search($text, array $params = [], $qualifier_name = 'keyword/ti') {
     $endpoint = 'search/bibs/' . $qualifier_name;
     $params['q'] = $this->encode($text);
+    // Fix for recordset searches. Keep the equals sign.
+    if ($qualifier_name == 'boolean') {
+      $params['q'] = str_replace('BRS%3D', 'BRS=', $params['q']);
+    }
     return $this->client->request()
       ->public()
       ->path($endpoint)
