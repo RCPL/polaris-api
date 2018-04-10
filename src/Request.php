@@ -128,12 +128,14 @@ class Request {
   }
 
   /**
-   * @param string $path
+   * @param string|array $path
    *
    * @return $this
    */
   public function path($path) {
-    $this->path = $path;
+    $this->path = is_array($path)
+      ? join('/', array_map([$this, 'encode'], $path))
+      : $path;
     return $this;
   }
 
@@ -255,5 +257,9 @@ class Request {
 
   private function json(Response $request) {
     return json_decode($request->getBody()->getContents());
+  }
+
+  private function encode($string) {
+    return urlencode($string);
   }
 }
