@@ -9,13 +9,6 @@ use RCPL\Polaris\Request;
 class Patron extends EntityBase {
 
   /**
-   * Public staff authenticated get requests.
-   *
-   * @var Request
-   */
-  private $request;
-
-  /**
    * Valid values to send for a PatronUpdate request.
    *
    * @var array
