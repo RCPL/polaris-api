@@ -42,13 +42,12 @@ class Patron extends EntityBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct(Controller $controller, $patron_barcode) {
-    parent::__construct($controller);
-    $this->barcode = $patron_barcode;
-    $this->request = $this->controller->client()->request()
-      ->staff()
-      ->public()
-      ->get();
+  public function __construct(Controller $controller, array $data = []) {
+    parent::__construct($controller, $data);
+    if (empty($this->data['barcode'])) {
+      throw new Exception('Missing value barcode');
+    }
+    $this->barcode = $this->data['barcode'];
   }
 
   /**
@@ -56,6 +55,10 @@ class Patron extends EntityBase {
    */
   public function url() {
     return 'patron/' . $this->barcode;
+  }
+
+  public function barcode() {
+    return $this->barcode;
   }
 
   /**
@@ -114,23 +117,7 @@ class Patron extends EntityBase {
   }
 
   public function authenticate($password) {
-    $endpoint = 'authenticator/patron';
-    // TODO: REFACTOR
-    $config = [
-      'json' => [
-        'Barcode' => $this->barcode,
-        'Password' => $password,
-      ],
-    ];
-
-    return $this->client->request()
-      ->public()
-      ->staff()
-      ->path($endpoint)
-      ->config($config)
-      ->post()
-      ->simple('AccessToken')
-      ->send();
+    return $this->controller->authenticate($this->barcode, $password);
   }
 
   /**

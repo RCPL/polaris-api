@@ -10,18 +10,43 @@ class Patron extends ControllerBase {
   private $updateable = [];
 
   public function get($patron_barcode) {
-    return $this->validate($patron_barcode) ? new Entity($this, $patron_barcode) : FALSE;
+    return new Entity($this, ['barcode' => $patron_barcode]);
   }
 
   public function validate($patron_barcode) {
+    // Not a valid username and will throw an API error anyway.
+    if (str_replace(' ', '', $patron_barcode) !== $patron_barcode) {
+      return FALSE;
+    }
     $request = $this->client->request()
       ->public()
       ->get()
       ->staff()
-      ->path('patron/' . $patron_barcode)
+      ->path(['patron', $patron_barcode])
       ->send();
-    // TODO: Initialize Patron object with PatronID.
-    return $request->ValidPatron ? $request->PatronID : FALSE;
+    return $request->ValidPatron
+      ? new Entity($this, (array) $request + ['barcode' => $request->PatronBarcode])
+      : FALSE;
+  }
+
+  // Does not return barcode so cannot start a new patron object.
+  public function authenticate($barcode, $password) {
+    $endpoint = 'authenticator/patron';
+    $config = [
+      'json' => [
+        'Barcode' => $barcode,
+        'Password' => $password,
+      ],
+    ];
+
+    return $this->client->request()
+      ->public()
+      ->staff()
+      ->path($endpoint)
+      ->config($config)
+      ->post()
+      ->simple('AccessToken')
+      ->send();
   }
 
   public function search($patron_barcode) {
