@@ -147,7 +147,7 @@ class Patron extends EntityBase {
     $query = [
       'addresses' => 1
     ];
-    return $this->request->path($endpoint)->query($query)->simple('PatronBasicData')->send();
+    return $this->get()->path($endpoint)->query($query)->simple('PatronBasicData')->send();
   }
 
   public function holdRequests($type = 'all') {
@@ -159,20 +159,20 @@ class Patron extends EntityBase {
   }
 
   public function itemsOut($type = 'all') {
-    return $this->request->path($this->url()  . '/itemsout/' . $type)->simple('PatronItemsOutGetRows')->send();
+    return $this->get()->path($this->url()  . '/itemsout/' . $type)->simple('PatronItemsOutGetRows')->send();
   }
 
   public function preferences() {
-    return $this->request->path($this->url() . '/preferences')->simple('PatronPreferences')->send();
+    return $this->get()->path($this->url() . '/preferences')->simple('PatronPreferences')->send();
   }
 
   public function account() {
-    return $this->request->path($this->url()  . '/account/outstanding')->simple('PatronAccountGetRows')->send();
+    return $this->get()->path($this->url()  . '/account/outstanding')->simple('PatronAccountGetRows')->send();
   }
 
   public function fines() {
     $endpoint = 'patron/' . $this->barcode  . '/account/outstanding';
-    return $this->request->path($endpoint)->simple('PatronAccountGetRows')->send();
+    return $this->get()->path($endpoint)->simple('PatronAccountGetRows')->send();
   }
 
   public function update() {
@@ -236,6 +236,16 @@ class Patron extends EntityBase {
       ->path($this->url()  . '/itemsout/' . $item_id)
       ->put()
       ->send();
+  }
+
+  /**
+   * Convenience method for get Patron requests.
+   */
+  private function get() {
+    return $this->controller->client()->request()
+      ->staff()
+      ->public()
+      ->get();
   }
 
 }
