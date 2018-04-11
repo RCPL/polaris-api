@@ -15,7 +15,6 @@ $client = new Client([
   'WORKSTATION_ID' => '< your info here >'
 ]);
 
-
 /**
  * Begin examples.
  */
@@ -173,4 +172,14 @@ $patron_barcode = 20080104453178; // Customer's library card number
 $item_id = 1885420;
 $patron = $client->patron->get($patron_barcode);
 $result = $patron->itemRenew($item_id);
+Kint::dump($result);
+
+// Create a patron
+print '<h2>5) Create a patron using PatronRegistrationCreate</h2>';
+$patron = $client->patron->setup(); // A blank patron object to fill in.
+$patron->PatronBranchID = 3;
+$patron->NameFirst = 'Testy-' . strtotime('now');
+$patron->NameLast = 'McTest-' . strtotime('now');
+$patron->PhoneVoice1 = '123-456-7890';
+$result = $patron->create();
 Kint::dump($result);

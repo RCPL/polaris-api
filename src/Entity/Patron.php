@@ -16,6 +16,13 @@ class Patron extends EntityBase {
   private $updateable = [];
 
   /**
+   * Valid values to send for a PatronRegistrationCreate request.
+   *
+   * @var array
+   */
+  private $createable = [];
+
+  /**
    * Current Patron's barcode.
    *
    * @var int
@@ -83,7 +90,7 @@ class Patron extends EntityBase {
   }
 
   /**
-   * Populate updateable Patron data.
+   * Populate updateable/createable Patron data.
    *
    * @param $key
    * @param $value
@@ -93,12 +100,18 @@ class Patron extends EntityBase {
     if ($this->controller->isUpdateable($key)) {
       $this->updateable[$key] = $value;
     }
+    if ($this->controller->isCreateable($key)) {
+      $this->createable[$key] = $value;
+    }
     return FALSE;
   }
 
   public function __get($key) {
     if ($this->controller->isUpdateable($key) && isset($this->updateable[$key])) {
       return $this->updateable[$key];
+    }
+    if ($this->controller->isCreateable($key) && isset($this->createable[$key])) {
+      return $this->createable[$key];
     }
     if (strtolower($key) == 'holdrequest') {
       return $this->holdRequestController();
@@ -166,6 +179,20 @@ class Patron extends EntityBase {
         'json' => $values,
       ])
       ->put()
+      ->send();
+  }
+
+  public function create() {
+    $values = array_filter(array_merge($this->controller->createable(), $this->createable));
+    $endpoint = 'patron';
+    return $this->client->request()
+      ->public()
+      ->path($endpoint)
+      ->staff()
+      ->config([
+        'json' => $values,
+      ])
+      ->post()
       ->send();
   }
 

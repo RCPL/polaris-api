@@ -9,8 +9,14 @@ class Patron extends ControllerBase {
 
   private $updateable = [];
 
+  private $createable = [];
+
   public function get($patron_barcode) {
     return new Entity($this, ['barcode' => $patron_barcode]);
+  }
+
+  public function setup() {
+    return new Entity($this, NULL);
   }
 
   public function validate($patron_barcode) {
@@ -97,6 +103,57 @@ class Patron extends ControllerBase {
       'PostalCode'                        => NULL,
       'Country'                           => NULL,
       'AddressTypeID'                     => NULL,
+    ];
+  }
+
+  public function isCreateable($key) {
+    return array_key_exists($key, $this->createable());
+  }
+
+  public function createable() {
+    return [
+      'LogonBranchID'           => 1,
+      'LogonUserID'             => 1,
+      'LogonWorkstationID'      => $this->client->params->get('WORKSTATION_ID'),
+      'PatronBranchID'          => NULL,
+      'PostalCode'              => NULL,
+      'ZipPlusFour'             => NULL,
+      'City'                    => NULL,
+      'State'                   => NULL,
+      'County'                  => NULL,
+      'CountryID'               => NULL,
+      'StreetOne'               => NULL,
+      'StreetTwo'               => NULL,
+      'NameFirst'               => NULL,
+      'NameLast'                => NULL,
+      'NameMiddle'              => NULL,
+      'User1'                   => NULL,
+      'User2'                   => NULL,
+      'User3'                   => NULL,
+      'User4'                   => NULL,
+      'User5'                   => NULL,
+      'Gender'                  => NULL,
+      'Birthdate'               => NULL,
+      'PhoneVoice1'             => NULL,
+      'PhoneVoice2'             => NULL,
+      'EmailAddress'            => NULL,
+      'LanguageID'              => NULL,
+      'DeliveryOptionID'        => NULL,
+      'UserName'                => NULL,
+      'Password'                => NULL,
+      'Password2'               => NULL,
+      'AltEmailAddress'         => NULL,
+      'PhoneVoice3'             => NULL,
+      'Phone1CarrierID'         => NULL,
+      'Phone2CarrierID'         => NULL,
+      'Phone3CarrierID'         => NULL,
+      'EnableSMS'               => NULL,
+      'TxtPhoneNumber'          => NULL,
+      'Barcode'                 => NULL,
+      'EReceiptOptionID'        => NULL,
+      'ExpirationDate'          => NULL,
+      'AddrCheckDate'           => NULL,
+      'PatronCode'              => NULL,
     ];
   }
 }
