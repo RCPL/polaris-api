@@ -5,14 +5,15 @@ require_once('vendor/autoload.php');
 use RCPL\Polaris\Client;
 
 $client = new Client([
-  'ACCESS_ID'      => '< your info here >',
-  'ACCESS_KEY'     => '< your info here >',
-  'HOST'           => '< your info here >',
-  'STAFF_DOMAIN'   => '< your info here >',
-  'STAFF_ID'       => '< your info here >',
-  'STAFF_USERNAME' => '< your info here >',
-  'STAFF_PASSWORD' => '< your info here >',
-  'WORKSTATION_ID' => '< your info here >'
+  'ACCESS_ID'                => '< your info here >',
+  'ACCESS_KEY'               => '< your info here >',
+  'HOST'                     => '< your info here >',
+  'STAFF_DOMAIN'             => '< your info here >',
+  'STAFF_ID'                 => '< your info here >',
+  'STAFF_USERNAME'           => '< your info here >',
+  'STAFF_PASSWORD'           => '< your info here >',
+  'WORKSTATION_ID'           => '< your info here >',
+  'DEFAULT_PATRON_BRANCH_ID' => '< your info here >'
 ]);
 
 /**
@@ -177,7 +178,6 @@ Kint::dump($result);
 // Create a patron
 print '<h2>5) Create a patron using PatronRegistrationCreate</h2>';
 $patron = $client->patron->setup(); // A blank patron object to fill in.
-$patron->PatronBranchID = 3;
 $patron->NameFirst = 'Testy-' . strtotime('now');
 $patron->NameLast = 'McTest-' . strtotime('now');
 $patron->PhoneVoice1 = '123-456-7890';

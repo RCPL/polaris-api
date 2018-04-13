@@ -115,7 +115,7 @@ class Patron extends ControllerBase {
       'LogonBranchID'           => 1,
       'LogonUserID'             => 1,
       'LogonWorkstationID'      => $this->client->params->get('WORKSTATION_ID'),
-      'PatronBranchID'          => NULL,
+      'PatronBranchID'          => $this->client->params->get('DEFAULT_PATRON_BRANCH_ID'),
       'PostalCode'              => NULL,
       'ZipPlusFour'             => NULL,
       'City'                    => NULL,
