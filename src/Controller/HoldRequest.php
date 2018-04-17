@@ -61,7 +61,8 @@ class HoldRequest extends ControllerBase {
   }
 
   public function get($id, $type = 'all') {
-    return isset($this->data[$type][$id]) ? $this->data[$type][$id] : FALSE;
+    $data = $this->getByType($type);
+    return isset($data[$id]) ? $data[$id] : FALSE;
   }
 
 }
