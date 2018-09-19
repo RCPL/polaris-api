@@ -93,4 +93,26 @@ class HoldRequest extends EntityBase {
       ->staff()
       ->send();
   }
+
+  /**
+   * Respond to an existing hold request.
+   *
+   * @param $values
+   *  Hold request response values.
+   * @return mixed|void
+   */
+  public function respond($data) {
+    if (!isset($data['RequestGUID'])) {
+      return;
+    }
+    $data = array_merge($this->data, $data);
+
+    return $this->client->request()
+      ->config(['json' => $data])
+      ->public()
+      ->put()
+      ->path('holdrequest/' . $data['RequestGUID'])
+      ->staff()
+      ->send();
+  }
 }
