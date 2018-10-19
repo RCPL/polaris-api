@@ -4,6 +4,7 @@ namespace RCPL\Polaris\Controller;
 
 use RCPL\Polaris\Client;
 use RCPL\Polaris\Entity\Patron as Entity;
+use Symfony\Component\Yaml\Yaml;
 
 class Patron extends ControllerBase {
 
@@ -11,12 +12,26 @@ class Patron extends ControllerBase {
 
   private $createable = [];
 
+  private $operator = 'AND';
+
   public function get($patron_barcode) {
     return new Entity($this, ['barcode' => $patron_barcode]);
   }
 
+  /**
+   * Create a new Patron entity.
+   */
+  public function create(array $data = []) {
+    return new Entity($this, $data);
+  }
+
+  /**
+   * @deprecated
+   *
+   * Use ::create()
+   */
   public function setup() {
-    return new Entity($this, NULL);
+    return new Entity($this, []);
   }
 
   public function validate($patron_barcode) {
@@ -55,13 +70,88 @@ class Patron extends ControllerBase {
       ->send();
   }
 
-  public function search($patron_barcode) {
+  protected function searchBase(array $query) {
+    $q = $this->searchQuery($query);
     return $this->client->request()
       ->protected()
       ->token()
       ->get()
       ->path('search/patrons/boolean')
-      ->query(['q' => 'PATB=' . $patron_barcode])
+      ->query($q, PHP_QUERY_RFC3986);
+  }
+
+  protected function searchQuery(array $query) {
+    array_walk($query, function(&$val, $key) {
+      $val = "$key=$val";
+    });
+    return ['q' => join(" {$this->operator} ", $query)];
+  }
+
+  protected function or() {
+    $this->operator = 'OR';
+    return $this;
+  }
+
+  protected function and() {
+    $this->operator = 'AND';
+    return $this;
+  }
+
+  protected function validEntryPoint($key) {
+    $parser = new \Symfony\Component\Yaml\Parser();
+    $access_points = parseFile(__DIR__ . '/../../assets/search-access-points.yml');
+    return $access_points;
+  }
+
+  public function searchOr(array $array) {
+    return $this->or()->search($array);
+  }
+
+  public function searchAnd(array $array) {
+    return $this->and()->search($array);
+  }
+
+  public function search(array $array) {
+    return $this->searchBase($array)->send();
+  }
+
+  public function searchByBarcode($patron_barcode) {
+    return $this->searchBase([
+      'PATB' => $patron_barcode,
+    ])->send();
+  }
+
+  public function searchByEmail($email) {
+    return $this->searchBase([
+      'EM' => $email,
+    ])->send();
+  }
+
+  /**
+   * @deprecated
+   *
+   * Use self::searchByEmail()
+   */
+  public function searchEmail($email) {
+    return $this->client->request()
+      ->protected()
+      ->token()
+      ->get()
+      ->path('search/patrons/boolean')
+      ->query(['q' => 'EM=' . $email])
+      ->send();
+  }
+
+  public function searchDuplicate($dob, $fname, $phone) {
+    // Note: The API returns an error whenever we try to use hyphens in the patron search, so avoid using those and try our best to find minimal matches.
+    $phone_last_four = substr($phone, -4);
+    $q = 'BD=*' . $dob . '* AND PATNF=' . $fname . '* AND PHONE=*' . $phone_last_four;
+    return $this->client->request()
+      ->protected()
+      ->token()
+      ->get()
+      ->path('search/patrons/boolean')
+      ->query(['q' => $q], PHP_QUERY_RFC3986)
       ->send();
   }
 

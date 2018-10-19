@@ -1,0 +1,72 @@
+ADCK:
+  title: 'Address check date'
+BD:
+  title: 'Birth date'
+BILL:
+  title: 'Billed'
+BLOCKFT:
+  title: 'Free text block'
+BLOCKLIB:
+  title: 'Library-assigned block'
+EM:
+  title: 'Email address'
+EXD:
+  title: 'Expiration date'
+FAX:
+  title: 'Fax'
+LA:
+  title: 'Language'
+LAD:
+  title: 'Last activity date'
+NOTE:
+  title: 'Notes'
+PATAD:
+  title: 'Address'
+PATB:
+  title: 'Barcode'
+PATC:
+  title: 'Patron code'
+PATL:
+  title: "Patron's registered library"
+PATN:
+  title: 'Name'
+PATNF:
+  title: 'Name (First Middle Last)'
+PATNL:
+  title: 'Name (Last, First Middle)'
+PHONE:
+  title: 'Phone'
+PREB:
+  title: 'Former barcode'
+PRID:
+  title: 'Record ID'
+REGD:
+  title: 'Registration date'
+STAC:
+  title: 'Statistical class'
+X1:
+  title: 'Library defined field #1'
+X2:
+  title: 'Library defined field #2'
+X3:
+  title: 'Library defined field #3'
+X4:
+  title: 'Library defined field #4'
+X5:
+  title: 'Library defined field #5'
+ZIP:
+  title: 'Postal code'
+CITY:
+  title: 'City'
+ORG:
+  title: 'Patron’s Organization'
+PATB:
+  title: 'Barcode'
+PATN:
+  title: 'Name'
+PATNL:
+  title: 'Name (Last, First Middle)'
+STATE:
+  title: 'State'
+ZIP:
+  title: 'Postal code'

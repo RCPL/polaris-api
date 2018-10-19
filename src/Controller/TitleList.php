@@ -61,8 +61,8 @@ class TitleList extends ControllerBase {
       ->config($config)
       ->post()
       ->send();
-    if ($response->PAPIErrorCode === 0) {
-      $this->getLists();
+    if (!$response->ErrorMessage) {
+      unset($this->data);
       return $this->getByName($list_name);
     }
     return FALSE;

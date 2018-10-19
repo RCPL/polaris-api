@@ -24,13 +24,16 @@ class HoldRequest extends ControllerBase {
     if (empty($values['BibID'])) {
       throw new \Exception('BibIB is required');
     }
+    if (empty($values['PickupOrgID'])) {
+      $values['PickupOrgID'] = 0;
+    }
     $values = array_merge([
       'PatronID'        => $this->patron->data()->PatronID,
       'BibID'           => $values['BibID'],
       'ItemBarcode'     => '',
       'VolumeNumber'    => '',
       'Designation'     => '',
-      'PickupOrgID'     => 0,
+      'PickupOrgID'     => $values['PickupOrgID'],
       'IsBorrowByMail'  => 0,
       'PatronNotes'     => '',
       'ActivationDate'  => '/Date(' . date('Y-m-d\T') . '00:00:00.00)/',

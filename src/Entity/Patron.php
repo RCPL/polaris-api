@@ -45,9 +45,11 @@ class Patron extends EntityBase {
   public function __construct(Controller $controller, array $data = []) {
     parent::__construct($controller, $data);
     if (empty($this->data['barcode'])) {
-      throw new Exception('Missing value barcode');
+      //throw new Exception('Missing value barcode');
     }
-    $this->barcode = $this->data['barcode'];
+    else {
+      $this->barcode = $this->data['barcode'];
+    }
   }
 
   /**
@@ -61,6 +63,16 @@ class Patron extends EntityBase {
     return $this->barcode;
   }
 
+  public function getFirstName() {
+    $data = $this->data();
+    return isset($data->NameFirst) ? $data->NameFirst : NULL;
+  }
+
+  public function getLastName() {
+    $data = $this->data();
+    return isset($data->NameLast) ? $data->NameLast : NULL;
+  }
+
   /**
    * Do not use directly, use $this->holdrequest.
    *
@@ -70,7 +82,7 @@ class Patron extends EntityBase {
    */
   protected function holdRequestController() {
     if (!isset($this->holdRequestController)) {
-      $this->holdRequestController = $this->client->holdrequest->init($this);
+      $this->holdRequestController = $this->client->holdRequest->init($this);
     }
     return $this->holdRequestController;
   }
@@ -84,7 +96,7 @@ class Patron extends EntityBase {
    */
   protected function titleListController() {
     if (!isset($this->titleListController)) {
-      $this->titleListController = $this->client->titlelist->init($this);
+      $this->titleListController = $this->client->titleList->init($this);
     }
     return $this->titleListController;
   }
@@ -168,8 +180,41 @@ class Patron extends EntityBase {
     return $this->get()->path($endpoint)->simple('PatronAccountGetRows')->send();
   }
 
+  public function readingHistory($rowsperpage = 5, $page = 0) {
+    $endpoint = 'patron/' . $this->barcode . '/readinghistory';
+    return $this->client->request()
+      ->public()
+      ->get()
+      ->query([
+        'rowsperpage' => $rowsperpage,
+        'page' => $page,
+      ])
+      ->path($endpoint)
+      ->simple('PatronReadingHistoryGetRows')
+      ->staff()
+      ->send();
+  }
+
+  public function enableReadingHistory() {
+    $this->ReadingListFlag = 1;
+    return $this->update();
+  }
+
+  public function disableReadingHistory() {
+    $this->ReadingListFlag = '0';
+    $this->update();
+    $endpoint = 'patron/' . $this->barcode . '/readinghistory';
+    return $this->client->request()
+      ->public()
+      ->path($endpoint)
+      ->staff()
+      ->delete()
+      ->send();
+  }
+
   public function update() {
-    $values = array_filter(array_merge($this->controller->updateable(), $this->updateable));
+    $values = array_merge($this->controller->updateable(), $this->updateable);
+    $values = array_filter($values, function($v) { return isset($v); });
     $endpoint = 'patron/' . $this->barcode;
     return $this->client->request()
       ->public()
@@ -181,6 +226,11 @@ class Patron extends EntityBase {
       ->put()
       ->send();
   }
+
+  /**
+   * @TODO: Make ::create() and ::update() protected and make this function delegate.
+   */
+  public function save() {}
 
   public function create() {
     $values = array_filter(array_merge($this->controller->createable(), $this->createable));

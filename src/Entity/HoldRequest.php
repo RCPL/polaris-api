@@ -50,6 +50,21 @@ class HoldRequest extends EntityBase {
       ->send();
   }
 
+  public function updatePickupBranch($branch_id) {
+    $endpoint = $this->url() . '/' . $this->id() . '/pickupbranch';
+    return $this->client->request()
+      ->public()
+      ->put()
+      ->query([
+        'wsid' => $this->client->params->get('WORKSTATION_ID'),
+        'userid' => 1,
+        'pickupbranchid' => $branch_id
+      ])
+      ->path($endpoint)
+      ->staff()
+      ->send();
+  }
+
   /**
    * Helper function to either suspend or activate.
    *

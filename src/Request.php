@@ -91,8 +91,11 @@ class Request {
    *
    * @return $this
    */
-  public function query(array $query) {
+  public function query(array $query, $encoding = NULL) {
     $this->config->set('query', $query);
+    if (isset($encoding)) {
+      $this->config->set('query_encoding', $encoding);
+    }
     return $this;
   }
 
@@ -237,14 +240,22 @@ class Request {
       'host' => $this->host(),
     ]);
     $this->config->set('base_uri', strtolower($uri->__toString()) . '/');
-    $query = http_build_query($this->config->get('query') ? $this->config->get('query') : []);
-    $full = $uri->withPath('/' . $this->path)->withQuery($query);
+    $full = $uri->withPath('/' . $this->path)->withQuery($this->buildQuery());
+
     $signature = $this->client->signature($this->method, $full->__toString(), $this->client->date, NULL, $this->config->get('access_secret', ''));
     $headers = $this->config->get('headers', []);
     $headers['Authorization'] = 'PWS ' . $this->client->params()->get('ACCESS_ID') . ':' . $signature;
     $this->config->set('headers', $headers);
     $response = $this->json($this->client->{strtolower($this->method)}($this->path, $this->config));
     return !empty($this->responseKey) ? $response->{$this->responseKey} : $response;
+  }
+
+  private function buildQuery() {
+    $query = $this->config->get('query') ? $this->config->get('query') : [];
+    $encoding = $this->config->get('query_encoding');
+    return !empty($encoding)
+      ? http_build_query($query, null, '&', $encoding)
+      : http_build_query($query);
   }
 
   private function host() {

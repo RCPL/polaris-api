@@ -140,11 +140,11 @@ class Client extends HttpClient {
    * @return bool
    */
   public function __get($name) {
-    $class = ucwords($name);
+    $class_name = ucwords($name);
     if (isset($this->{$name})) {
       return $this->{$name};
     }
-    if ($class = $this->getControllerClass($name)) {
+    if ($class = $this->getControllerClass($class_name)) {
       return $this->setControllerClass($name, $class);
     }
     return FALSE;
