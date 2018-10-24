@@ -176,10 +176,16 @@ $result = $patron->itemRenew($item_id);
 Kint::dump($result);
 
 // Create a patron
-print '<h2>5) Create a patron using PatronRegistrationCreate</h2>';
+print '<h2>20) Create a patron using PatronRegistrationCreate</h2>';
 $patron = $client->patron->setup(); // A blank patron object to fill in.
 $patron->NameFirst = 'Testy-' . strtotime('now');
 $patron->NameLast = 'McTest-' . strtotime('now');
 $patron->PhoneVoice1 = '123-456-7890';
 $result = $patron->create();
+Kint::dump($result);
+
+// MARC records
+print '<h2>21) Get a list of MARC records for an array of bib ids using Synch_BibsByIDGet</h2>';
+$bib_ids = [1567026, 1567424];
+$result = $client->bibliography->marc($bib_ids);
 Kint::dump($result);
