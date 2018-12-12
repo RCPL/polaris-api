@@ -189,3 +189,15 @@ print '<h2>21) Get a list of MARC records for an array of bib ids using Synch_Bi
 $bib_ids = [1567026, 1567424];
 $result = $client->bibliography->marc($bib_ids);
 Kint::dump($result);
+
+// Get deleted catalog bibs since yesterday
+print '<h2>22) Get a list of deleted bib ids since yesterday using Synch_GetDeletedBibs</h2>';
+$deletedate = date('m/d/Y H:i:s', strtotime('yesterday'));
+$result = $client->bibliography->getDeletedBibs($deletedate);
+Kint::dump($result);
+
+// Get update catalog bibs since yesterday
+print '<h2>22) Get a list of updated bib ids since yesterday using Synch_GetUpdatedBibs</h2>';
+$updatedate = date('m/d/Y H:i:s', strtotime('yesterday'));
+$result = $client->bibliography->getUpdatedBibs($updatedate);
+Kint::dump($result);

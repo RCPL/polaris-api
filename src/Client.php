@@ -3,6 +3,7 @@
 namespace RCPL\Polaris;
 
 use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\UriTemplate;
@@ -64,7 +65,7 @@ class Client extends HttpClient {
    * Client constructor.
    */
   public function __construct(array $params) {
-    // https://catalog.richlandlibrary.com/PAPIService/REST/public/v1/1033/100/1/search/headings/TI?startpoint=1&numterms=50&preferredpos=1
+    // https://catalog.yourlibrary.com/PAPIService/REST/public/v1/1033/100/1/search/headings/TI?startpoint=1&numterms=50&preferredpos=1
     $this->params = $this->parameters($params);
 
     $this->uri = $this->parameters([
@@ -106,7 +107,12 @@ class Client extends HttpClient {
       return $this->createRequest();
     }
     //$options['debug'] = TRUE; // Guzzle debugging.
-    return parent::request($method, $uri, $options);
+    try {
+      return parent::request($method, $uri, $options);
+    }
+    catch (RequestException $e) {
+      return new Response();
+    }
   }
 
   /**

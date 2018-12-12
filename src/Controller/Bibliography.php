@@ -59,9 +59,11 @@ class Bibliography extends ControllerBase {
 
     if ($full) {
       $bib = $this;
-      $response->BibSearchRows = array_map(function($item) use ($bib) {
-        return $bib->get($item->ControlNumber, $item);
-      }, $response->BibSearchRows);
+      if (is_object($response)) {
+        $response->BibSearchRows = array_map(function($item) use ($bib) {
+          return $bib->get($item->ControlNumber, $item);
+        }, $response->BibSearchRows);
+      }
     }
 
     return $response;
@@ -81,5 +83,38 @@ class Bibliography extends ControllerBase {
       ->query(['bibids' => $q], PHP_QUERY_RFC3986)
       ->send();
     return $result->GetBibsByIDRows;
+  }
+
+  /**
+   * @param string $deletedate
+   *     Start date and time (records that have been deleted since this
+   *     date/time)
+   *     Format: MM/DD/YYYY HH:MM:SS
+   */
+  public function getDeletedBibs($deletedate) {
+    $result = $this->client->request()
+      ->protected()
+      ->token()
+      ->get()
+      ->path('synch/bibs/deleted')
+      ->query(['deletedate' => $deletedate], PHP_QUERY_RFC3986)
+      ->send();
+    return $result->BibIDListRows;
+  }
+
+  /**
+   * @param string $updatedate
+   *     Start date for record updates
+   *     Format: MM/DD/YYYY HH:MM:SS
+   */
+  public function getUpdatedBibs($updatedate) {
+    $result = $this->client->request()
+      ->protected()
+      ->token()
+      ->get()
+      ->path('synch/bibs/updated')
+      ->query(['updatedate' => $updatedate], PHP_QUERY_RFC3986)
+      ->send();
+    return $result->BibIDListRows;
   }
 }

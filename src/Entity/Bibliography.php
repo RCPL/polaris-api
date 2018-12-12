@@ -43,7 +43,12 @@ class Bibliography extends EntityBase {
       'itemsTotal' => ['id' => 7],
       'requests' => ['id' => 8],
       'weblink' => ['name' => 'WebLink'],
+      'thumbnaillink' => ['name' => 'ThumbnailLink'],
       'subjects' => ['id' => 20],
+      'edition' => ['name' => 'Edition'],
+      'primaryTypeOfMaterial' => ['name' => 'PrimaryTypeOfMaterial'],
+      'targetAudience' => ['name' => 'TargetAudience'],
+      'otherAuthors' => ['id' => 21],
     ];
 
     return $name ? $map[$name] : $map;
@@ -141,7 +146,12 @@ class Bibliography extends EntityBase {
       'oclc',
       'upc',
       'summary',
-      'weblink'
+      'weblink',
+      'thumbnaillink',
+      'edition',
+      'primaryTypeOfMaterial',
+      'targetAudience',
+      'otherAuthors',
     ];
 
     return array_merge($values, $this->getValues($props));
