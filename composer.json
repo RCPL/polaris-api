@@ -5,7 +5,7 @@
     "require": {
         "guzzlehttp/guzzle": "^6.3.3",
         "zendframework/zend-stdlib": "^3.0.1",
-        "symfony/yaml": "^4.1"
+        "symfony/yaml": "~3.4.22"
     },
     "require-dev": {
         "kint-php/kint": "^2.2"
