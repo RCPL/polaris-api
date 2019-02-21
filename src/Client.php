@@ -90,6 +90,7 @@ class Client extends HttpClient {
         "Username" => $this->params->get('STAFF_USERNAME'),
         "Password" => $this->params->get('STAFF_PASSWORD'),
       ],
+      'timeout' => 30,
     ];
     parent::__construct($config);
   }
@@ -106,7 +107,6 @@ class Client extends HttpClient {
     if (is_null($method)) {
       return $this->createRequest();
     }
-    //$options['debug'] = TRUE; // Guzzle debugging.
     try {
       return parent::request($method, $uri, $options);
     }
