@@ -35,12 +35,12 @@ class Bibliography extends ControllerBase {
 
   /**
    * @param string $text
-   *   Text to search for (required)
+   *   Text to search for (required).
    * @param array $params
-   *   Search parameters, i.e. 'sortby'
+   *   Search parameters, i.e. 'sortby'.
    * @param string $qualifier_name
-   *   KW|TI|AU|SU|NOTE|PUB|GENRE|SE|ISBN|ISSN|LCCN|PN|LC|DD|LOCAL|SUDOC|CODEN|STRN|CN|BC
-   * @param boolean $full
+   *   KW|TI|AU|SU|NOTE|PUB|GENRE|SE|ISBN|ISSN|LCCN|PN|LC|DD|LOCAL|SUDOC|CODEN|STRN|CN|BC.
+   * @param bool $full
    *   if TRUE returns a full Bibliography Entity per result.
    */
   public function search($text, array $params = [], $qualifier_name = 'keyword/ti', $full = FALSE) {
@@ -60,7 +60,7 @@ class Bibliography extends ControllerBase {
     if ($full) {
       $bib = $this;
       if (is_object($response)) {
-        $response->BibSearchRows = array_map(function($item) use ($bib) {
+        $response->BibSearchRows = array_map(function ($item) use ($bib) {
           return $bib->get($item->ControlNumber, $item);
         }, $response->BibSearchRows);
       }

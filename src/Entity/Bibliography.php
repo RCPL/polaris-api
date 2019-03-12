@@ -100,16 +100,6 @@ class Bibliography extends EntityBase {
     return $data;
   }
 
-  protected function getEditions() {
-    $isbns = $this->getDataElement(6);
-
-    if (is_array($isbns)) {
-      return implode(', ', $isbns);
-    }
-
-    return [];
-  }
-
   protected function getValues($props) {
     $values = [];
 
@@ -171,8 +161,7 @@ class Bibliography extends EntityBase {
     $isbn = $this->map('isbn');
     $subj = $this->map('subjects');
 
-    $values['editions'] = $this->concatDataElement($isbn['id']);
-    $values['subjects'] = $this->concatDataElement($subj['id']);
+    $values['subjects'] = $this->concatDataElement($subj['id'], '|');
     $values['holdings'] = $this->holdings();
 
     return $values;

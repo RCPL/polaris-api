@@ -87,11 +87,13 @@ class Request {
   /**
    * Add query string parameters to request.
    *
-   * @param array $query
+   * @param array|string $query
+   *
+   * @param string $encoding
    *
    * @return $this
    */
-  public function query(array $query, $encoding = NULL) {
+  public function query($query, $encoding = NULL) {
     $this->config->set('query', $query);
     if (isset($encoding)) {
       $this->config->set('query_encoding', $encoding);
@@ -251,6 +253,9 @@ class Request {
   }
 
   private function buildQuery() {
+    if (is_string($this->config->get('query'))) {
+      return $this->config->get('query');
+    }
     $query = $this->config->get('query') ? $this->config->get('query') : [];
     $encoding = $this->config->get('query_encoding');
     return !empty($encoding)
