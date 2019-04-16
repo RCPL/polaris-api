@@ -71,3 +71,7 @@ the Github issue queue and request support with it.
 3. Commit your changes: `git commit -am 'Add some feature'`
 4. Push to the branch: `git push origin my-new-feature`
 5. Submit a pull request :D
+
+## BrowserStack
+Richland Library tests on multiple browsers and devices using BrowserStack. Find out more at [browserstack.com](https://www.>browserstack.com).
+<a href="https://www.browserstack.com"><img src="https://www.browserstack.com/images/layout/browserstack-logo-600x315.png" width="150" alt="BrowserStack Logo" /></a>
