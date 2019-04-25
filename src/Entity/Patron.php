@@ -227,6 +227,16 @@ class Patron extends EntityBase {
       ->send();
   }
 
+  public function updateUsername($new_username) {
+    $endpoint = 'patron/' . $this->barcode . '/username/' . $new_username;
+    return $this->client->request()
+      ->public()
+      ->path($endpoint)
+      ->staff()
+      ->put()
+      ->send();
+  }
+
   /**
    * @TODO: Make ::create() and ::update() protected and make this function delegate.
    */
