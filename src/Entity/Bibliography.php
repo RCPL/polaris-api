@@ -34,11 +34,15 @@ class Bibliography extends EntityBase {
       'title' => ['id' => 35, 'name' => 'Title'],
       'author' => ['id' => 18, 'name' => 'Author'],
       'format' => ['id' => 17],
+      'publisher' => ['id' => 2, 'name' => 'Publisher'],
       'pubdate' => ['name' => 'PublicationDate'],
+      'description' => ['id' => 3, 'name' => 'Description'],
+      'contents' => ['id' => 29, 'name' => 'Contents'],
       'isbn' => ['id' => 6, 'name' => 'ISBN'],
       'oclc' => ['name' => 'OCLC'],
       'upc' => ['name' => 'UPC'],
       'summary' => ['id' => 9, 'name' => 'Summary'],
+      'series' => ['id' => 19, 'name' => 'Series'],
       'itemsAvailable' => ['id' => 16],
       'itemsTotal' => ['id' => 7],
       'requests' => ['id' => 8],
@@ -49,6 +53,7 @@ class Bibliography extends EntityBase {
       'primaryTypeOfMaterial' => ['name' => 'PrimaryTypeOfMaterial'],
       'targetAudience' => ['name' => 'TargetAudience'],
       'otherAuthors' => ['id' => 21],
+      // 'notes' => ['id' => 28, 'name' => 'Notes']
     ];
 
     return $name ? $map[$name] : $map;
@@ -128,20 +133,26 @@ class Bibliography extends EntityBase {
     $props = [
       'itemsAvailable',
       'itemsTotal',
+      'requests',
       'title',
       'author',
+      'publisher',
       'pubdate',
+      'description',
+      'contents',
       'format',
       'isbn',
       'oclc',
       'upc',
       'summary',
+      'series',
       'weblink',
       'thumbnaillink',
       'edition',
       'primaryTypeOfMaterial',
       'targetAudience',
       'otherAuthors',
+      // 'notes'
     ];
 
     return array_merge($values, $this->getValues($props));

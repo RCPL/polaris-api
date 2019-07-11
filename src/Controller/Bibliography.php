@@ -13,10 +13,11 @@ class Bibliography extends ControllerBase {
 
   /**
    * @param int $id
+   *
    * @param array $data
-   *   Item data keyed by ElementID
-   * @param stdClass $result
-   *   BibSearchRow result, contains additional useful properties
+   *   Item data keyed by ElementID.
+   * @param object $result
+   *   BibSearchRow result, contains additional useful properties.
    */
   public function create(int $id, array $data = [], $result = NULL) {
     return new Entity($this, $id, $data, $result);
@@ -30,7 +31,11 @@ class Bibliography extends ControllerBase {
       ->simple('BibGetRows')
       ->send();
 
-    return $this->create($id, $data, $result);
+    if (is_array($data)) {
+      return $this->create($id, $data, $result);
+    }
+    
+    return FALSE;
   }
 
   /**
@@ -71,7 +76,7 @@ class Bibliography extends ControllerBase {
 
   /**
    * @param array $bib_ids
-   *   Bibliographic ID values to pull MARC records for
+   *   Bibliographic ID values to pull MARC records for.
    */
   public function marc($bib_ids) {
     $q = implode(',', $bib_ids);
@@ -87,9 +92,8 @@ class Bibliography extends ControllerBase {
 
   /**
    * @param string $deletedate
-   *     Start date and time (records that have been deleted since this
-   *     date/time)
-   *     Format: MM/DD/YYYY HH:MM:SS
+   *   Start date and time (records that have been deleted since this
+   *   date/time). Format: MM/DD/YYYY HH:MM:SS.
    */
   public function getDeletedBibs($deletedate) {
     $result = $this->client->request()
@@ -104,8 +108,7 @@ class Bibliography extends ControllerBase {
 
   /**
    * @param string $updatedate
-   *     Start date for record updates
-   *     Format: MM/DD/YYYY HH:MM:SS
+   *   Start date for record updates. Format: MM/DD/YYYY HH:MM:SS.
    */
   public function getUpdatedBibs($updatedate) {
     $result = $this->client->request()
