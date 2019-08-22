@@ -246,4 +246,20 @@ class Patron extends ControllerBase {
       'PatronCode'              => NULL,
     ];
   }
+
+  /**
+   * @param string $deletedate
+   *   Start date and time (records that have been deleted since this
+   *   date/time). Format: MM/DD/YYYY HH:MM:SS.
+   */
+  public function getDeletedPatrons($deletedate) {
+    $result = $this->client->request()
+      ->protected()
+      ->token()
+      ->get()
+      ->path('synch/patrons/deleted')
+      ->query(['deletedate' => $deletedate], PHP_QUERY_RFC3986)
+      ->send();
+    return $result->BarcodeAndPatronIDRows;
+  }
 }
