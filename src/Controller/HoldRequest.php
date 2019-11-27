@@ -60,6 +60,9 @@ class HoldRequest extends ControllerBase {
         $this->data[$type][$hold->HoldRequestID] = $this->create((array) $hold);
       }
     }
+    if (!isset($this->data[$type])) {
+      return [];
+    }
     return $this->data[$type];
   }
 
