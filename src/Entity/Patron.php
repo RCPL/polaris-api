@@ -212,6 +212,21 @@ class Patron extends EntityBase {
       ->send();
   }
 
+  public function clearReadingHistory($ids) {
+    $endpoint = 'patron/' . $this->barcode . '/readinghistory';
+    // A maximum of 50 are allowed.
+    if (strlen($ids) >= 1) {
+      $query = ['ids' => $ids];
+    }
+    return $this->client->request()
+      ->public()
+      ->path($endpoint)
+      ->query($query)
+      ->staff()
+      ->delete()
+      ->send();
+  }
+
   public function update() {
     $values = array_merge($this->controller->updateable(), $this->updateable);
     $values = array_filter($values, function($v) { return isset($v); });

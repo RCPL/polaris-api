@@ -65,9 +65,11 @@ class Bibliography extends ControllerBase {
     if ($full) {
       $bib = $this;
       if (is_object($response)) {
-        $response->BibSearchRows = array_map(function ($item) use ($bib) {
-          return $bib->get($item->ControlNumber, $item);
-        }, $response->BibSearchRows);
+        $bib_search_rows = [];
+        foreach ($response->BibSearchRows as $item) {
+          $bib_search_rows[] = $bib->get($item->ControlNumber, $item);
+        }
+        $response->BibSearchRows = $bib_search_rows;
       }
     }
 
