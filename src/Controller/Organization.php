@@ -62,4 +62,13 @@ class Organization extends ControllerBase {
     return $this->getByKey('OrganizationID', $id);
   }
 
+  public function getPickupBranches() {
+    return $this->client->request()
+      ->public()
+      ->path('pickupbranches')
+      ->simple('PickupBranchesRows')
+      ->get()
+      ->send();
+  }
+
 }
