@@ -53,7 +53,7 @@ class Bibliography extends EntityBase {
       'primaryTypeOfMaterial' => ['name' => 'PrimaryTypeOfMaterial'],
       'targetAudience' => ['name' => 'TargetAudience'],
       'otherAuthors' => ['id' => 21],
-      // 'notes' => ['id' => 28, 'name' => 'Notes']
+      'notes' => ['id' => 28, 'name' => 'Notes']
     ];
 
     return $name ? $map[$name] : $map;
@@ -152,7 +152,7 @@ class Bibliography extends EntityBase {
       'primaryTypeOfMaterial',
       'targetAudience',
       'otherAuthors',
-      // 'notes'
+      'notes'
     ];
 
     return array_merge($values, $this->getValues($props));
