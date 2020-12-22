@@ -52,4 +52,5 @@ class ControllerBase {
   public function url() {
     return '';
   }
+
 }

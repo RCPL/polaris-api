@@ -36,7 +36,7 @@ class HoldRequest extends ControllerBase {
       'PickupOrgID'     => $values['PickupOrgID'],
       'IsBorrowByMail'  => 0,
       'PatronNotes'     => '',
-      'ActivationDate'  => '/Date(' . ((int) round(microtime(true) * 1000) - 18000000) . ')/',
+      'ActivationDate'  => '/Date(' . ((int) round(microtime(TRUE) * 1000) - 18000000) . ')/',
       'Answer'          => '',
       'RequestID'       => '',
       'WorkstationID'   => $this->client->params->get('WORKSTATION_ID'),

@@ -2,7 +2,6 @@
 
 namespace RCPL\Polaris;
 
-
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Uri;
 use RCPL\Polaris\Utility\Parameters;
@@ -139,7 +138,7 @@ class Request {
    */
   public function path($path) {
     $this->path = is_array($path)
-      ? join('/', array_map([$this, 'encode'], $path))
+      ? implode('/', array_map([$this, 'encode'], $path))
       : $path;
     return $this;
   }
@@ -278,4 +277,5 @@ class Request {
   private function encode($string) {
     return urlencode($string);
   }
+
 }

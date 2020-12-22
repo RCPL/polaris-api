@@ -5,9 +5,7 @@ namespace RCPL\Polaris;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\UriTemplate;
-use RCPL\Polaris\Controller\Staff;
 use RCPL\Polaris\Utility\Parameters;
 
 /**
@@ -22,7 +20,7 @@ use RCPL\Polaris\Utility\Parameters;
 class Client extends HttpClient {
 
   /**
-   * Http client
+   * Http client.
    *
    * @var \GuzzleHttp\Client
    */
@@ -31,12 +29,12 @@ class Client extends HttpClient {
   /**
    * Polaris parameters.
    *
-   * @var Parameters;
+   * @var \RCPL\Polaris\Utility\Parameters
    */
   protected $params;
 
   /**
-   * @var UriTemplate;
+   * @var \GuzzleHttp\UriTemplate
    */
   protected $uri;
 
@@ -186,6 +184,16 @@ class Client extends HttpClient {
   }
 
   /**
+   * @param array $params
+   *
+   * @return $this
+   */
+  public function setUri(array $params) {
+    $this->uri = $this->parameters($params);
+    return $this;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function get($path, Parameters $config) {
@@ -218,6 +226,7 @@ class Client extends HttpClient {
    * @param string $date
    * @param string $pass
    * @param string $access_secret
+   *
    * @return string
    */
   public function signature($http_method, $url, $date, $pass = '', $access_secret = '') {

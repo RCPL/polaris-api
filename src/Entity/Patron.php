@@ -2,9 +2,7 @@
 
 namespace RCPL\Polaris\Entity;
 
-use RCPL\Polaris\Client;
 use RCPL\Polaris\Controller\Patron as Controller;
-use RCPL\Polaris\Request;
 
 class Patron extends EntityBase {
 
@@ -150,7 +148,7 @@ class Patron extends EntityBase {
   public function data() {
     $endpoint = 'patron/' . $this->barcode . '/basicdata';
     $query = [
-      'addresses' => 1
+      'addresses' => 1,
     ];
     return $this->get()->path($endpoint)->query($query)->simple('PatronBasicData')->send();
   }
@@ -164,7 +162,7 @@ class Patron extends EntityBase {
   }
 
   public function itemsOut($type = 'all') {
-    return $this->get()->path($this->url()  . '/itemsout/' . $type)->simple('PatronItemsOutGetRows')->send();
+    return $this->get()->path($this->url() . '/itemsout/' . $type)->simple('PatronItemsOutGetRows')->send();
   }
 
   public function preferences() {
@@ -172,11 +170,11 @@ class Patron extends EntityBase {
   }
 
   public function account() {
-    return $this->get()->path($this->url()  . '/account/outstanding')->simple('PatronAccountGetRows')->send();
+    return $this->get()->path($this->url() . '/account/outstanding')->simple('PatronAccountGetRows')->send();
   }
 
   public function fines() {
-    $endpoint = 'patron/' . $this->barcode  . '/account/outstanding';
+    $endpoint = 'patron/' . $this->barcode . '/account/outstanding';
     return $this->get()->path($endpoint)->simple('PatronAccountGetRows')->send();
   }
 
@@ -229,7 +227,9 @@ class Patron extends EntityBase {
 
   public function update() {
     $values = array_merge($this->controller->updateable(), $this->updateable);
-    $values = array_filter($values, function($v) { return isset($v); });
+    $values = array_filter($values, function ($v) {
+      return isset($v);
+    });
     $endpoint = 'patron/' . $this->barcode;
     return $this->client->request()
       ->public()
@@ -271,7 +271,7 @@ class Patron extends EntityBase {
       ->send();
   }
 
-  public function itemCheckout() {
+  public function itemCheckin() {
     $query = [
       'wsid' => $this->client->params->get('WORKSTATION_ID'),
       'userid' => 1,
@@ -300,6 +300,65 @@ class Patron extends EntityBase {
       ->send();
   }
 
+  /**
+   * Checkout an item by ID.
+   *
+   * @param int $item_id
+   *   The item ID.
+   * @param array $response
+   *   Response to prompt (optional).
+   *
+   * @return object
+   *   The Polaris response object.
+   */
+  public function itemCheckout($item_id, array $response = []) {
+    $guid = NULL;
+    $request_type = 'post';
+    if (!empty($response)) {
+      $guid = $response['json']['id'];
+      $request_type = 'put';
+
+    }
+    $host = $this->client->params->get('HOST');
+    $path = 'https://' . $host . '/Polaris.ApplicationServices/api/v1/eng/20/polaris/8/633/workflow/' . $guid;
+    $access_token = $this->client->staff->auth()->AccessToken;
+    $access_secret = $this->client->staff->auth()->AccessSecret;
+    $auth_header = 'PAS polaris:' . $access_token . ':' . $access_secret;
+    $config = array_merge([
+      'headers' => [
+        'Authorization' => $auth_header,
+      ],
+      'json' => [
+        'WorkflowRequestType' => 2,
+        'TxnBranchID' => $this->client->params->get('DEFAULT_PATRON_BRANCH_ID'),
+        'TxnUserID' => $this->client->params->get('STAFF_ID'),
+        'TxnWorkstationID' => $this->client->params->get('WORKSTATION_ID'),
+        'RequestExtension' => [
+          'WorkflowRequestExtensionType' => 1,
+          'Data' => [
+            'CheckoutTypeID' => 6,
+            'PatronBarcode' => $this->barcode,
+            'ItemBarcode' => $item_id,
+            'OfflineCheckoutDate' => NULL,
+            'IsSpecialLoan' => FALSE,
+            'SpecialLoanUnits' => 0,
+            'SpecialLoanUnitsNum' => 0,
+            'IsOvernightPermitted' => FALSE,
+            'IsBBMBulkCheckout' => FALSE,
+            'IgnorePatronBlocksCheck' => FALSE,
+            'IgnoreItemsOutLimitPrompt' => FALSE,
+            'IgnoreLoanLimitPromptForMaterialTypeIDs' => NULL,
+            'IgnoreORSPatronServiceDatePrompt' => FALSE,
+          ],
+        ],
+        'WorkflowReplies' => NULL,
+      ],
+    ], $response);
+    if ($response = $this->client->{$request_type}($path, $this->client->parameters($config))) {
+      return json_decode($response->getBody());
+    }
+  }
+
   public function itemRenew($item_id) {
     $renewdata = new \stdClass();
     $renewdata->IgnoreOverrideErrors = TRUE;
@@ -313,9 +372,9 @@ class Patron extends EntityBase {
           'LogonUserID' => 1,
           'LogonWorkstationID' => $this->client->params->get('WORKSTATION_ID'),
           'RenewData' => $renewdata,
-        ]
+        ],
       ])
-      ->path($this->url()  . '/itemsout/' . $item_id)
+      ->path($this->url() . '/itemsout/' . $item_id)
       ->put()
       ->send();
   }

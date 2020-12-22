@@ -2,9 +2,6 @@
 
 namespace RCPL\Polaris\Entity;
 
-use RCPL\Polaris\Client;
-use RCPL\Polaris\Controller\HoldRequest as Controller;
-
 class HoldRequest extends EntityBase {
 
   /**
@@ -19,7 +16,9 @@ class HoldRequest extends EntityBase {
   /**
    * @param string $int
    *   PHP Date Interval format.
+   *
    * @param array $values
+   *
    * @throws \Exception
    */
   public function suspendUntil($int = 'P1D', array $values = []) {
@@ -58,7 +57,7 @@ class HoldRequest extends EntityBase {
       ->query([
         'wsid' => $this->client->params->get('WORKSTATION_ID'),
         'userid' => 1,
-        'pickupbranchid' => $branch_id
+        'pickupbranchid' => $branch_id,
       ])
       ->path($endpoint)
       ->staff()
@@ -84,7 +83,7 @@ class HoldRequest extends EntityBase {
           // TODO: Make configurable.
           'UserID' => 1,
           'ActivationDate' => $date->format(\DateTime::ISO8601),
-        ]
+        ],
       ])
       ->path($endpoint)
       ->put()
@@ -130,4 +129,5 @@ class HoldRequest extends EntityBase {
       ->staff()
       ->send();
   }
+
 }
