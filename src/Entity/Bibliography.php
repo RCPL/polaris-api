@@ -47,6 +47,7 @@ class Bibliography extends EntityBase {
       'itemsTotal' => ['id' => 7],
       'requests' => ['id' => 8],
       'weblink' => ['name' => 'WebLink'],
+      'website' => ['id' => 33],
       'thumbnaillink' => ['name' => 'ThumbnailLink'],
       'subjects' => ['id' => 20],
       'edition' => ['name' => 'Edition'],
@@ -111,6 +112,11 @@ class Bibliography extends EntityBase {
     foreach ($props as $prop) {
       $values[$prop] = $this->getProperty($prop);
     }
+    // Fix for website URLs that contain text. Change them into links.
+    if (isset($values['website']) && !empty($values['website'])) {
+      preg_match_all('#\bhttps?://[^,\s()<>]+(?:\([\w\d]+\)|([^,[:punct:]\s]|/))#', $values['website'], $matches);
+      $values['website'] = '<a href="' . $matches[0][0] . '">' . $matches[0][0] . '</a>';
+    }
 
     return $values;
   }
@@ -147,6 +153,7 @@ class Bibliography extends EntityBase {
       'summary',
       'series',
       'weblink',
+      'website',
       'thumbnaillink',
       'edition',
       'primaryTypeOfMaterial',
