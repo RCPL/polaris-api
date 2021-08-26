@@ -57,6 +57,8 @@ class HoldRequest extends ControllerBase {
         ->path($this->url() . '/' . $type)
         ->send();
       foreach ($result as $hold) {
+        // Adjust to American spelling of "canceled".
+        $hold->StatusDescription = str_replace('Cancelled', 'Canceled', $hold->StatusDescription);
         $this->data[$type][$hold->HoldRequestID] = $this->create((array) $hold);
       }
     }
