@@ -113,7 +113,7 @@ class Bibliography extends EntityBase {
       $values[$prop] = $this->getProperty($prop);
     }
     // Fix for website URLs that contain text. Change them into links.
-    if (isset($values['website']) && !empty($values['website'])) {
+    if (isset($values['website']) && !empty($values['website']) && !is_array($values['website'])) {
       preg_match_all('#\bhttps?://[^,\s()<>]+(?:\([\w\d]+\)|([^,[:punct:]\s]|/))#', $values['website'], $matches);
       $values['website'] = '<a href="' . $matches[0][0] . '">' . $matches[0][0] . '</a>';
     }
