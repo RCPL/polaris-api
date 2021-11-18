@@ -145,6 +145,11 @@ class Patron extends EntityBase {
     return $this->data();
   }
 
+  public function circulateBlocksGet() {
+    $endpoint = 'patron/' . $this->barcode . '/circulationblocks';
+    return $this->get()->path($endpoint)->send();
+  }
+
   public function data() {
     $endpoint = 'patron/' . $this->barcode . '/basicdata';
     $query = [
