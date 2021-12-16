@@ -66,6 +66,11 @@ class Patron extends EntityBase {
     return isset($data->NameFirst) ? $data->NameFirst : NULL;
   }
 
+  public function getMiddleName() {
+    $data = $this->data();
+    return isset($data->NameMiddle) ? $data->NameMiddle : NULL;
+  }
+
   public function getLastName() {
     $data = $this->data();
     return isset($data->NameLast) ? $data->NameLast : NULL;
