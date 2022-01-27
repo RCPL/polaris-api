@@ -15,22 +15,3 @@ $list->delete();
 $list = $patron->titlelist->getByName('Name of Title List');
 $list->addTitle([bib-id]);
 ```
-
-# TODO
-
-## Patron
-* registration / register / create
-
-## Account
-* pay
-
-## Items
-* renew
-* checkout
-* checkin
-
-
-
-
-
-
