@@ -167,6 +167,10 @@ class Patron extends EntityBase {
     return $this->holdRequest->getByType($type);
   }
 
+  public function illRequests($type = 'all') {
+    return $this->holdRequest->getByTypeILL($type);
+  }
+
   public function titleLists() {
     return $this->titlelist->getLists();
   }
