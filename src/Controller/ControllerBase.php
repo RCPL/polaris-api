@@ -2,7 +2,7 @@
 
 namespace RCPL\Polaris\Controller;
 
-use Zend\Stdlib\Parameters;
+use Laminas\Stdlib\Parameters;
 use RCPL\Polaris\Client;
 
 class ControllerBase {

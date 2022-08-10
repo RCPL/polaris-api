@@ -2,10 +2,10 @@
 
 namespace RCPL\Polaris\Utility;
 
-use Zend\Stdlib\ArrayUtils;
-use Zend\Stdlib\Parameters as ZendParameters;
+use Laminas\Stdlib\ArrayUtils;
+use Laminas\Stdlib\Parameters as LaminasParameters;
 
-class Parameters extends ZendParameters {
+class Parameters extends LaminasParameters {
 
   /**
    * @param Parameters|array $parameters
