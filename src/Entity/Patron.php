@@ -239,7 +239,7 @@ class Patron extends EntityBase {
       ->send();
   }
 
-  public function update() {
+  public function update() { // PatronRegistrationUpdate
     $values = array_merge($this->controller->updateable(), $this->updateable);
     $values = array_filter($values, function ($v) {
       return isset($v);
@@ -264,6 +264,17 @@ class Patron extends EntityBase {
       ->staff()
       ->put()
       ->send();
+  }
+
+  /**
+   * Updates the customer profile by changing the location ID for the preferred
+   * pickup location for holds.
+   */
+  public function updateDefaultPickupLocation($pickupLocationID) {
+    if (is_numeric($pickupLocationID)) {
+      $this->RequestPickupBranchID = $pickupLocationID;
+      return $this->update();
+    }
   }
 
   /**
