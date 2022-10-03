@@ -414,4 +414,35 @@ class Patron extends EntityBase {
       ->get();
   }
 
+  /**
+   * Allows use of PatronMessagesGet API method.
+   */
+  public function getMessages($unreadonly = true) {
+    $endpoint = 'patron/' . $this->barcode . '/messages';
+    $query = [
+      'unreadonly' => $unreadonly,
+    ];
+    return $this->get()->path($endpoint)->query($query)->simple('PatronMessagesGetRows')->send();
+  }
+
+  /**
+   * Allows use of PatronMessagesUpdateStatus API method.
+   */
+  public function updateMessage($messageid) {
+    $endpoint = 'patron/' . $this->barcode . '/messages/freetext/' . $messageid;
+    return $this->client->request()
+      ->public()
+      ->path($endpoint)
+      ->staff()
+      ->put()
+      ->send();
+  }
+
+  /*
+   * Allows use of PatronNotesGet API method.
+   */
+  public function getNotes() {
+    return $this->get()->path($this->url() . '/notes')->simple('PatronNotes')->send();
+  }
+  
 }
