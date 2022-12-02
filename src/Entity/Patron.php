@@ -444,5 +444,17 @@ class Patron extends EntityBase {
   public function getNotes() {
     return $this->get()->path($this->url() . '/notes')->simple('PatronNotes')->send();
   }
+
+  /**
+   * Allows use of the PatronUdfConfigsGet API method
+   */
+  public function getUDFs() {
+    return $this->client->request()
+      ->public()
+      ->path('patronudfs')
+      ->simple('PatronUdfConfigsRows')
+      ->get()
+      ->send();
+  }
   
 }

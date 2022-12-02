@@ -244,6 +244,7 @@ class Patron extends ControllerBase {
       'ExpirationDate'          => NULL,
       'AddrCheckDate'           => NULL,
       'PatronCode'              => NULL,
+      'GenderID'                => NULL,
     ];
   }
 
