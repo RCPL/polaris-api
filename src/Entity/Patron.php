@@ -245,6 +245,16 @@ class Patron extends EntityBase {
       return isset($v);
     });
     $endpoint = 'patron/' . $this->barcode;
+    // $test_response = $this->client->request()
+    // ->public()
+    // ->path($endpoint)
+    // ->staff()
+    // ->config([
+    //   'json' => $values,
+    // ])
+    // ->put()
+    // ->send();
+    // $debug = true;
     return $this->client->request()
       ->public()
       ->path($endpoint)
