@@ -258,7 +258,7 @@ class Request {
     $query = $this->config->get('query') ? $this->config->get('query') : [];
     $encoding = $this->config->get('query_encoding');
     return !empty($encoding)
-      ? http_build_query($query, null, '&', $encoding)
+      ? http_build_query($query, '', '&', $encoding)
       : http_build_query($query);
   }
 
