@@ -193,6 +193,7 @@ class Patron extends ControllerBase {
       'PostalCode'                        => NULL,
       'Country'                           => NULL,
       'AddressTypeID'                     => NULL,
+      'RequestPickupBranchID'             => NULL,
     ];
   }
 
@@ -248,6 +249,8 @@ class Patron extends ControllerBase {
       'AddrCheckDate'           => NULL,
       'PatronCode'              => NULL,
       'GenderID'                => NULL,
+      'UseLegalNameOnNotices'   => NULL,
+      'RequestPickupBranchID'   => NULL,
     ];
   }
 
