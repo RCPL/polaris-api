@@ -5,7 +5,7 @@
   "require": {
     "guzzlehttp/guzzle": "^6.5.8",
     "laminas/laminas-stdlib": "^3.11.0",
-    "symfony/yaml": "^4.4"
+    "symfony/yaml": "^6.2"
   },
   "require-dev": {
     "kint-php/kint": "^2.2"
