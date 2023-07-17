@@ -4,6 +4,7 @@
   "type": "library",
   "require": {
     "guzzlehttp/guzzle": "^7.5",
+    "guzzle/uri-template": "^1.0",
     "laminas/laminas-stdlib": "^3.11.0",
     "symfony/yaml": "^6.2"
   },
