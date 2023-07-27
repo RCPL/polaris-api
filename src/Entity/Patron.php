@@ -209,7 +209,7 @@ class Patron extends EntityBase {
 
   public function readingHistory($rowsperpage = 5, $page = 0) {
     $endpoint = 'patron/' . $this->barcode . '/readinghistory';
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->get()
       ->query([
@@ -231,7 +231,7 @@ class Patron extends EntityBase {
     $this->ReadingListFlag = '0';
     $this->update();
     $endpoint = 'patron/' . $this->barcode . '/readinghistory';
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->path($endpoint)
       ->staff()
@@ -245,7 +245,7 @@ class Patron extends EntityBase {
     if (strlen($ids) >= 1) {
       $query = ['ids' => $ids];
     }
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->path($endpoint)
       ->query($query)
@@ -260,7 +260,7 @@ class Patron extends EntityBase {
       return isset($v);
     });
     $endpoint = 'patron/' . $this->barcode;
-    // $test_response = $this->client->request()
+    // $test_response = $this->client->createRequest()
     // ->public()
     // ->path($endpoint)
     // ->staff()
@@ -270,7 +270,7 @@ class Patron extends EntityBase {
     // ->put()
     // ->send();
     // $debug = true;
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->path($endpoint)
       ->staff()
@@ -283,7 +283,7 @@ class Patron extends EntityBase {
 
   public function updateUsername($new_username) {
     $endpoint = 'patron/' . $this->barcode . '/username/' . $new_username;
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->path($endpoint)
       ->staff()
@@ -310,7 +310,7 @@ class Patron extends EntityBase {
   public function create() {
     $values = array_filter(array_merge($this->controller->createable(), $this->createable));
     $endpoint = 'patron';
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->path($endpoint)
       ->staff()
@@ -337,7 +337,7 @@ class Patron extends EntityBase {
       'ItemExpireDateTime' => str_replace('+00:00', '', gmdate(DATE_ATOM, strtotime('+21 days'))),
       'TransactionDateTime' => str_replace('+00:00', '', gmdate(DATE_ATOM, strtotime('now'))),
     ];
-    return $this->client->request()
+    return $this->client->createRequest()
       ->protected()
       ->put()
       ->staff()
@@ -412,7 +412,7 @@ class Patron extends EntityBase {
   public function itemRenew($item_id) {
     $renewdata = new \stdClass();
     $renewdata->IgnoreOverrideErrors = TRUE;
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->staff()
       ->config([
@@ -433,7 +433,7 @@ class Patron extends EntityBase {
    * Convenience method for get Patron requests.
    */
   private function get() {
-    return $this->controller->client()->request()
+    return $this->controller->client()->createRequest()
       ->staff()
       ->public()
       ->get();
@@ -455,7 +455,7 @@ class Patron extends EntityBase {
    */
   public function updateMessage($messageid) {
     $endpoint = 'patron/' . $this->barcode . '/messages/freetext/' . $messageid;
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->path($endpoint)
       ->staff()
@@ -474,7 +474,7 @@ class Patron extends EntityBase {
    * Allows use of the PatronUdfConfigsGet API method
    */
   public function getUDFs() {
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->path('patronudfs')
       ->simple('PatronUdfConfigsRows')

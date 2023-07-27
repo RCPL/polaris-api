@@ -40,7 +40,7 @@ class HoldRequest extends EntityBase {
 
   public function cancel() {
     $endpoint = $this->url() . '/' . $this->id() . '/cancelled';
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->put()
       ->query(['wsid' => $this->client->params->get('WORKSTATION_ID'), 'userid' => 1])
@@ -51,7 +51,7 @@ class HoldRequest extends EntityBase {
 
   public function updatePickupBranch($branch_id) {
     $endpoint = $this->url() . '/' . $this->id() . '/pickupbranch';
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->put()
       ->query([
@@ -75,7 +75,7 @@ class HoldRequest extends EntityBase {
    */
   private function changeStatus($status, \DateTime $date, array $values = []) {
     $endpoint = $this->url() . '/' . $this->id() . '/' . $status;
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->staff()
       ->config([
@@ -99,7 +99,7 @@ class HoldRequest extends EntityBase {
     if (!empty($this->id())) {
       return;
     }
-    return $this->client->request()
+    return $this->client->createRequest()
       ->config(['json' => $this->data])
       ->public()
       ->post()
@@ -121,7 +121,7 @@ class HoldRequest extends EntityBase {
     }
     $data = array_merge($this->data, $data);
 
-    return $this->client->request()
+    return $this->client->createRequest()
       ->config(['json' => $data])
       ->public()
       ->put()

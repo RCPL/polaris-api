@@ -123,7 +123,7 @@ class Bibliography extends EntityBase {
 
   public function holdings($query = []) {
     $endpoint = 'bib/' . $this->id . '/holdings';
-    return $this->client->request()
+    return $this->client->createRequest()
       ->staff()
       ->public()
       ->path($endpoint)

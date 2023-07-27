@@ -5,7 +5,8 @@ namespace RCPL\Polaris;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\UriTemplate;
+use GuzzleHttp\UriTemplate\UriTemplate;
+use Psr\Http\Message\ResponseInterface;
 use RCPL\Polaris\Utility\Parameters;
 
 /**
@@ -94,31 +95,11 @@ class Client extends HttpClient {
   }
 
   /**
-   * Used by controllers to get a new request, or revert to parent http client if no method is specified.
+   * Used by controllers to initiate a new request.
    *
-   * @param null $method
-   * @param string $uri
-   * @param array $options
-   * @return mixed|\Psr\Http\Message\ResponseInterface|Request
+   * @return mixed|Request
    */
-  public function request($method = NULL, $uri = '', array $options = []) {
-    if (is_null($method)) {
-      return $this->createRequest();
-    }
-    try {
-      return parent::request($method, $uri, $options);
-    }
-    catch (RequestException $e) {
-      return new Response();
-    }
-  }
-
-  /**
-   * Helper method for ::request()
-   *
-   * @return Request
-   */
-  protected function createRequest() {
+  public function createRequest() {
     return new Request($this);
   }
 
@@ -191,31 +172,6 @@ class Client extends HttpClient {
   public function setUri(array $params) {
     $this->uri = $this->parameters($params);
     return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function get($path, Parameters $config) {
-    return parent::get($path, $config->toArray());
-  }
-
-  public function put($path, Parameters $config) {
-    return parent::put($path, $config->toArray());
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function post($path, Parameters $config) {
-    return parent::post($path, $config->toArray());
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function delete($path, Parameters $config) {
-    return parent::delete($path, $config->toArray());
   }
 
   /**

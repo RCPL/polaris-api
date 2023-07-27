@@ -29,7 +29,7 @@ class TitleList extends EntityBase {
     $query = [
       'list' => $this->id()
     ];
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->staff()
       ->path($endpoint)
@@ -50,7 +50,7 @@ class TitleList extends EntityBase {
         'LocalControlNumber' => $item_id
       ],
     ];
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->staff()
       ->path($endpoint)
@@ -69,7 +69,7 @@ class TitleList extends EntityBase {
       'list' => $this->id(),
       'position' => $position_id
     ];
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->staff()
       ->path($endpoint)
@@ -95,7 +95,7 @@ class TitleList extends EntityBase {
     $query = [
       'list' => $this->id()
     ];
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->staff()
       ->path($endpoint)
@@ -117,7 +117,7 @@ class TitleList extends EntityBase {
         'ToRecordStoreID' => $list_id_to
       ],
     ];
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->staff()
       ->path($endpoint)
@@ -138,7 +138,7 @@ class TitleList extends EntityBase {
         'ToRecordStoreID' => $list_id_to
       ],
     ];
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->staff()
       ->path($endpoint)
@@ -158,7 +158,7 @@ class TitleList extends EntityBase {
         'ToRecordStoreID' => $list_id_to
       ],
     ];
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->staff()
       ->path($endpoint)

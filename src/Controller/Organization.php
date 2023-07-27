@@ -12,7 +12,7 @@ class Organization extends ControllerBase {
    * Use getAll() or getByType()
    */
   public function get($type = 'all') {
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->path('organizations/' . $type)
       ->get()
@@ -24,7 +24,7 @@ class Organization extends ControllerBase {
    */
   public function getAll($type = 'all') {
     if (!isset($this->organizations)) {
-      $this->organizations = $this->client->request()
+      $this->organizations = $this->client->createRequest()
         ->public()
         ->path('organizations/' . $type)
         ->simple('OrganizationsGetRows')
@@ -63,7 +63,7 @@ class Organization extends ControllerBase {
   }
 
   public function getPickupBranches() {
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->path('pickupbranches')
       ->simple('PickupBranchesRows')

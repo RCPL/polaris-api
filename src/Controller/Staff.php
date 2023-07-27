@@ -8,7 +8,7 @@ class Staff extends ControllerBase {
 
   public function auth() {
     if (!isset($this->auth)) {
-      $this->auth = $this->client->request()
+      $this->auth = $this->client->createRequest()
         ->protected()
         ->path('authenticator/staff')
         ->post()

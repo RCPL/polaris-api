@@ -21,7 +21,7 @@ class Recordset extends ControllerBase {
    */
   public function getRecordset($recordset_id) {
     $endpoint = 'recordsets/' . $recordset_id . '/records';
-    return $this->client->request()
+    return $this->client->createRequest()
       ->protected()
       ->token()
       ->path($endpoint)
@@ -46,7 +46,7 @@ class Recordset extends ControllerBase {
         'Records' => implode(',', $record_values),
       ],
     ];
-    return $this->client->request()
+    return $this->client->createRequest()
       ->protected()
       ->token()
       ->path($endpoint)
@@ -78,7 +78,7 @@ class Recordset extends ControllerBase {
       ];
       // Then tell it to remove those from the recordset.
       $endpoint = 'recordsets/' . $recordset_id;
-      return $this->client->request()
+      return $this->client->createRequest()
         ->protected()
         ->token()
         ->path($endpoint)

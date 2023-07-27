@@ -30,7 +30,7 @@ class TitleList extends ControllerBase {
   public function getLists() {
     if (!isset($this->data)) {
       $this->data = [];
-      $result = $this->client->request()
+      $result = $this->client->createRequest()
         ->staff()
         ->public()
         ->get()
@@ -54,7 +54,7 @@ class TitleList extends ControllerBase {
         'RecordStoreName' => $list_name,
       ],
     ];
-    $response = $this->client->request()
+    $response = $this->client->createRequest()
       ->public()
       ->staff()
       ->path($endpoint)
@@ -84,7 +84,7 @@ class TitleList extends ControllerBase {
       'list' => $list_id
     ];
     unset($this->data[$list_id]);
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->staff()
       ->path($endpoint)
@@ -101,7 +101,7 @@ class TitleList extends ControllerBase {
     $query = [
       'list' => $list_id
     ];
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->staff()
       ->path($endpoint)
@@ -122,7 +122,7 @@ class TitleList extends ControllerBase {
         'LocalControlNumber' => $item_id
       ],
     ];
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->staff()
       ->path($endpoint)
@@ -141,7 +141,7 @@ class TitleList extends ControllerBase {
       'list' => $list_id,
       'position' => $position_id
     ];
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->staff()
       ->path($endpoint)
@@ -159,7 +159,7 @@ class TitleList extends ControllerBase {
     $query = [
       'list' => $list_id
     ];
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->staff()
       ->path($endpoint)
@@ -181,7 +181,7 @@ class TitleList extends ControllerBase {
         'ToRecordStoreID' => $list_id_to
       ],
     ];
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->staff()
       ->path($endpoint)
@@ -202,7 +202,7 @@ class TitleList extends ControllerBase {
         'ToRecordStoreID' => $list_id_to
       ],
     ];
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->staff()
       ->path($endpoint)
@@ -222,7 +222,7 @@ class TitleList extends ControllerBase {
         'ToRecordStoreID' => $list_id_to
       ],
     ];
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->staff()
       ->path($endpoint)

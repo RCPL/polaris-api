@@ -48,7 +48,7 @@ class Headings extends ControllerBase {
 
   public function search($qualifierName = 'SU', array $params = []) {
     $params = $this->params->merge($params);
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->simple('HeadingsSearchRows')
       ->path('search/headings/' . $qualifierName)

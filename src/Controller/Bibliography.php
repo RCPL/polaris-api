@@ -24,7 +24,7 @@ class Bibliography extends ControllerBase {
   }
 
   public function get($id, $result = NULL) {
-    $data = $this->client->request()
+    $data = $this->client->createRequest()
       ->public()
       ->get()
       ->path('bib/' . $id)
@@ -55,7 +55,7 @@ class Bibliography extends ControllerBase {
     if ($qualifier_name == 'boolean') {
       $params['q'] = str_replace('%3D', '=', $params['q']);
     }
-    $response = $this->client->request()
+    $response = $this->client->createRequest()
       ->public()
       ->path($endpoint)
       ->query($params, PHP_QUERY_RFC3986)
@@ -82,7 +82,7 @@ class Bibliography extends ControllerBase {
    */
   public function marc($bib_ids) {
     $q = implode(',', $bib_ids);
-    $result = $this->client->request()
+    $result = $this->client->createRequest()
       ->protected()
       ->token()
       ->get()
@@ -98,7 +98,7 @@ class Bibliography extends ControllerBase {
    *   date/time). Format: MM/DD/YYYY HH:MM:SS.
    */
   public function getDeletedBibs($deletedate) {
-    $result = $this->client->request()
+    $result = $this->client->createRequest()
       ->protected()
       ->token()
       ->get()
@@ -113,7 +113,7 @@ class Bibliography extends ControllerBase {
    *   Start date for record updates. Format: MM/DD/YYYY HH:MM:SS.
    */
   public function getUpdatedBibs($updatedate) {
-    $result = $this->client->request()
+    $result = $this->client->createRequest()
       ->protected()
       ->token()
       ->get()

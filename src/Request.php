@@ -59,7 +59,7 @@ class Request {
   protected $ssl;
 
   /**
-   * @var Parameters
+   * @var string
    */
   protected $uri;
 
@@ -247,7 +247,8 @@ class Request {
     $headers = $this->config->get('headers', []);
     $headers['Authorization'] = 'PWS ' . $this->client->params()->get('ACCESS_ID') . ':' . $signature;
     $this->config->set('headers', $headers);
-    $response = $this->json($this->client->{strtolower($this->method)}($this->path, $this->config));
+    $options = (array) $this->config;
+    $response = $this->json($this->client->{strtolower($this->method)}($this->path, $options));
     return !empty($this->responseKey) ? $response->{$this->responseKey} : $response;
   }
 

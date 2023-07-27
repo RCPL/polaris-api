@@ -39,7 +39,7 @@ class Patron extends ControllerBase {
     if (str_replace(' ', '', $patron_barcode) !== $patron_barcode) {
       return FALSE;
     }
-    $request = $this->client->request()
+    $request = $this->client->createRequest()
       ->public()
       ->get()
       ->staff()
@@ -60,7 +60,7 @@ class Patron extends ControllerBase {
       ],
     ];
 
-    return $this->client->request()
+    return $this->client->createRequest()
       ->public()
       ->staff()
       ->path($endpoint)
@@ -72,7 +72,7 @@ class Patron extends ControllerBase {
 
   protected function searchBase(array $query) {
     $q = $this->searchQuery($query);
-    return $this->client->request()
+    return $this->client->createRequest()
       ->protected()
       ->token()
       ->get()
@@ -133,7 +133,7 @@ class Patron extends ControllerBase {
    * Use self::searchByEmail()
    */
   public function searchEmail($email) {
-    return $this->client->request()
+    return $this->client->createRequest()
       ->protected()
       ->token()
       ->get()
@@ -146,7 +146,7 @@ class Patron extends ControllerBase {
     // Note: The API returns an error whenever we try to use hyphens in the patron search, so avoid using those and try our best to find minimal matches.
     $phone_last_four = substr($phone, -4);
     $q = 'BD=*' . $dob . '* AND PATNF=' . $fname . '* AND PHONE=*' . $phone_last_four;
-    return $this->client->request()
+    return $this->client->createRequest()
       ->protected()
       ->token()
       ->get()
@@ -260,7 +260,7 @@ class Patron extends ControllerBase {
    *   date/time). Format: MM/DD/YYYY HH:MM:SS.
    */
   public function getDeletedPatrons($deletedate) {
-    $result = $this->client->request()
+    $result = $this->client->createRequest()
       ->protected()
       ->token()
       ->get()

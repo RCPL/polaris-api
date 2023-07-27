@@ -90,7 +90,7 @@ class HoldRequest extends ControllerBase {
 
   public function getByType($type = 'all') {
     if (!isset($this->data[$type])) {
-      $result = $this->client->request()
+      $result = $this->client->createRequest()
         ->staff()
         ->public()
         ->get()
@@ -112,7 +112,7 @@ class HoldRequest extends ControllerBase {
   public function getByTypeILL($type = 'all') {
     $this->data[$type] = []; // Empty this out otherwise we end up joining ILLs
     // ...and holds together here.
-    $result = $this->client->request()
+    $result = $this->client->createRequest()
       ->staff()
       ->public()
       ->get()
