@@ -404,8 +404,16 @@ class Patron extends EntityBase {
         'WorkflowReplies' => NULL,
       ],
     ], $response);
-    if ($response = $this->client->{$request_type}($path, $this->client->parameters($config))) {
-      return json_decode($response->getBody());
+    $leap_api_request = TRUE;
+    if ($request_type == 'post') {
+      if ($response = $this->client->createRequest()->path($path)->config($config)->post()->send($leap_api_request)) {
+        return $response;
+      }
+    }
+    elseif ($request_type == 'put') {
+      if ($response = $this->client->createRequest()->path($path)->config($config)->put()->send($leap_api_request)) {
+        return $response;
+      }
     }
   }
 
