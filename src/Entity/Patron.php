@@ -355,66 +355,25 @@ class Patron extends EntityBase {
    *
    * @param int $item_id
    *   The item ID.
-   * @param array $response
-   *   Response to prompt (optional).
    *
    * @return object
    *   The Polaris response object.
    */
-  public function itemCheckout($item_id, array $response = []) {
-    $guid = NULL;
-    $request_type = 'post';
-    if (!empty($response)) {
-      $guid = $response['json']['id'];
-      $request_type = 'put';
-
-    }
-    $host = $this->client->params->get('HOST');
-    $path = 'https://' . $host . '/Polaris.ApplicationServices/api/v1/eng/20/polaris/8/633/workflow/' . $guid;
-    $access_token = $this->client->staff->auth()->AccessToken;
-    $access_secret = $this->client->staff->auth()->AccessSecret;
-    $auth_header = 'PAS polaris:' . $access_token . ':' . $access_secret;
-    $config = array_merge([
-      'headers' => [
-        'Authorization' => $auth_header,
-      ],
-      'json' => [
-        'WorkflowRequestType' => 2,
-        'TxnBranchID' => $this->client->params->get('DEFAULT_PATRON_BRANCH_ID'),
-        'TxnUserID' => $this->client->params->get('STAFF_ID'),
-        'TxnWorkstationID' => $this->client->params->get('WORKSTATION_ID'),
-        'RequestExtension' => [
-          'WorkflowRequestExtensionType' => 1,
-          'Data' => [
-            'CheckoutTypeID' => 6,
-            'PatronBarcode' => $this->barcode,
-            'ItemBarcode' => $item_id,
-            'OfflineCheckoutDate' => NULL,
-            'IsSpecialLoan' => FALSE,
-            'SpecialLoanUnits' => 0,
-            'SpecialLoanUnitsNum' => 0,
-            'IsOvernightPermitted' => FALSE,
-            'IsBBMBulkCheckout' => FALSE,
-            'IgnorePatronBlocksCheck' => FALSE,
-            'IgnoreItemsOutLimitPrompt' => FALSE,
-            'IgnoreLoanLimitPromptForMaterialTypeIDs' => NULL,
-            'IgnoreORSPatronServiceDatePrompt' => FALSE,
-          ],
+  public function itemCheckout($item_id) {
+    return $this->client->createRequest()
+      ->public()
+      ->staff()
+      ->config([
+        'json' => [
+          'ItemBarcode' => $item_id,
+          'LogonBranchID' => 1,
+          'LogonUserID' => 1,
+          'LogonWorkstationID' => $this->client->params->get('WORKSTATION_ID'),
         ],
-        'WorkflowReplies' => NULL,
-      ],
-    ], $response);
-    $leap_api_request = TRUE;
-    if ($request_type == 'post') {
-      if ($response = $this->client->createRequest()->path($path)->config($config)->post()->send($leap_api_request)) {
-        return $response;
-      }
-    }
-    elseif ($request_type == 'put') {
-      if ($response = $this->client->createRequest()->path($path)->config($config)->put()->send($leap_api_request)) {
-        return $response;
-      }
-    }
+      ])
+      ->path($this->url() . '/itemsout')
+      ->post()
+      ->send();
   }
 
   public function itemRenew($item_id) {

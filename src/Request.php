@@ -234,21 +234,19 @@ class Request {
    *
    * @return mixed
    */
-  public function send($leap_api_request = FALSE) {
-    if (!$leap_api_request) {
-      $this->uri->set('base', $this->params->get('HOST'));
-      $uri = Uri::fromParts([
-        'scheme' => $this->ssl ? 'https' : 'http',
-        'host' => $this->host(),
-      ]);
-      $this->config->set('base_uri', strtolower($uri->__toString()) . '/');
-      $full = $uri->withPath('/' . $this->path)->withQuery($this->buildQuery());
+  public function send() {
+    $this->uri->set('base', $this->params->get('HOST'));
+    $uri = Uri::fromParts([
+      'scheme' => $this->ssl ? 'https' : 'http',
+      'host' => $this->host(),
+    ]);
+    $this->config->set('base_uri', strtolower($uri->__toString()) . '/');
+    $full = $uri->withPath('/' . $this->path)->withQuery($this->buildQuery());
 
-      $signature = $this->client->signature($this->method, $full->__toString(), $this->client->date, NULL, $this->config->get('access_secret', ''));
-      $headers = $this->config->get('headers', []);
-      $headers['Authorization'] = 'PWS ' . $this->client->params()->get('ACCESS_ID') . ':' . $signature;
-      $this->config->set('headers', $headers);
-    }
+    $signature = $this->client->signature($this->method, $full->__toString(), $this->client->date, NULL, $this->config->get('access_secret', ''));
+    $headers = $this->config->get('headers', []);
+    $headers['Authorization'] = 'PWS ' . $this->client->params()->get('ACCESS_ID') . ':' . $signature;
+    $this->config->set('headers', $headers);
     $options = (array) $this->config;
     $response = $this->json($this->client->{strtolower($this->method)}($this->path, $options));
     return !empty($this->responseKey) ? $response->{$this->responseKey} : $response;
