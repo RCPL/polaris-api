@@ -71,6 +71,13 @@ class Request {
   protected $responseKey;
 
   /**
+   * Polaris parameters.
+   *
+   * @var \RCPL\Polaris\Utility\Parameters
+   */
+  protected $params;
+
+  /**
    * Request constructor.
    *
    * @param Client $client
