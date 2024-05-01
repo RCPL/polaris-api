@@ -97,7 +97,7 @@ Kint::dump($result);
 print '<h2>9) Create a list for a customer using PatronAccountCreateTitleList</h2>';
 $patron_barcode = 20080104020258; // Customer's library card number
 $patron = $client->patron->get($patron_barcode);
-$result = $patron->titlelist->create('testmjarrell-' . strtotime('now'));
+$result = $patron->titlelist->create('testlist-' . strtotime('now'));
 Kint::dump($result);
 
 // Delete a list for a customer.
