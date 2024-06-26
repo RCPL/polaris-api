@@ -10,6 +10,8 @@ class Bibliography extends EntityBase {
 
   private $id;
 
+  public $result;
+
   /**
    * {@inheritdoc}
    */

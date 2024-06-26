@@ -16,8 +16,9 @@ use RCPL\Polaris\Utility\Parameters;
  * @property Staff staff;
  * @property Organization organization;
  * @property Patron patron;
- * @property Bib bib;
+ * @property Bib bibliography;
  */
+
 class Client extends HttpClient {
 
   /**
@@ -50,6 +51,37 @@ class Client extends HttpClient {
    * @var mixed
    */
   public $date;
+
+  /**
+   * A staff object.
+   *
+   * @var object
+   */
+  protected $staff;
+
+  /**
+   * A organization object.
+   *
+   * @var object
+   */
+  protected $organization;
+
+  /**
+   * A patron object.
+   *
+   * @var object
+   */
+  protected $patron;
+
+  /**
+   * A bibliography item object.
+   *
+   * @var object
+   */
+  protected $bibliography;
+
+  protected $holdRequest;
+  protected $titleList;
 
   /**
    * @param array $params
