@@ -206,10 +206,11 @@ class Request {
    * @return $this
    */
   public function staff() {
+    $auth = $this->client->staff->auth();
     $this->config->set('headers', [
-      'X-PAPI-AccessToken' => $this->client->staff->auth()->AccessToken,
+      'X-PAPI-AccessToken' => $auth->AccessToken,
     ]);
-    $this->config->set('access_secret', $this->client->staff->auth()->AccessSecret);
+    $this->config->set('access_secret', $auth->AccessSecret);
     return $this;
   }
 
@@ -249,6 +250,8 @@ class Request {
     ]);
     $this->config->set('base_uri', strtolower($uri->__toString()) . '/');
     $full = $uri->withPath('/' . $this->path)->withQuery($this->buildQuery());
+    // Logging, debugging Guzzle requests to the catalog.
+    // \Drupal::logger('Polaris API')->notice('Sending request to: %uri', ['%uri' => $full]);
 
     $signature = $this->client->signature($this->method, $full->__toString(), $this->client->date, NULL, $this->config->get('access_secret', ''));
     $headers = $this->config->get('headers', []);
