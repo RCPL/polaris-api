@@ -80,8 +80,27 @@ class Client extends HttpClient {
    */
   protected $bibliography;
 
+
+  /**
+   * A hold request object.
+   * 
+   * @var object
+   */
   protected $holdRequest;
+
+  /**
+   * A title list object.
+   * 
+   * @var object
+   */
   protected $titleList;
+
+  /**
+   * A recordset object.
+   * 
+   * @var object
+   */
+  protected $recordset;
 
   /**
    * @param array $params
