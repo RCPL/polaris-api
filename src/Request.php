@@ -257,6 +257,8 @@ class Request {
     $headers = $this->config->get('headers', []);
     $headers['Authorization'] = 'PWS ' . $this->client->params()->get('ACCESS_ID') . ':' . $signature;
     $this->config->set('headers', $headers);
+    $this->config->set('timeout', 30);
+    $this->config->set('connect_timeout', 10);
     $options = (array) $this->config;
     $response = $this->json($this->client->{strtolower($this->method)}($this->path, $options));
     return !empty($this->responseKey) ? $response->{$this->responseKey} : $response;

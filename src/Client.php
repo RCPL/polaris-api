@@ -141,7 +141,7 @@ class Client extends HttpClient {
         "Password" => $this->params->get('STAFF_PASSWORD'),
       ],
       'timeout' => 30,
-      'connect_timeout' => 30,
+      'connect_timeout' => 10,
     ];
     parent::__construct($config);
   }
