@@ -243,6 +243,16 @@ class Request {
    * @return mixed
    */
   public function send() {
+    return $this->sendAsync()->wait();
+  }
+
+  /**
+   * Send the final request asynchronously.
+   *
+   * @return \GuzzleHttp\Promise\PromiseInterface
+   *   Promise resolving to the simplified response, when configured.
+   */
+  public function sendAsync() {
     $this->uri->set('base', $this->params->get('HOST'));
     $uri = Uri::fromParts([
       'scheme' => $this->ssl ? 'https' : 'http',
@@ -257,11 +267,13 @@ class Request {
     $headers = $this->config->get('headers', []);
     $headers['Authorization'] = 'PWS ' . $this->client->params()->get('ACCESS_ID') . ':' . $signature;
     $this->config->set('headers', $headers);
-    $this->config->set('timeout', 30);
-    $this->config->set('connect_timeout', 10);
+    $this->config->set('timeout', $this->config->get('timeout', 30));
+    $this->config->set('connect_timeout', $this->config->get('connect_timeout', 10));
     $options = (array) $this->config;
-    $response = $this->json($this->client->{strtolower($this->method)}($this->path, $options));
-    return !empty($this->responseKey) ? $response->{$this->responseKey} : $response;
+    return $this->client->requestAsync($this->method, $this->path, $options)->then(function (Response $request) {
+      $response = $this->json($request);
+      return !empty($this->responseKey) ? $response->{$this->responseKey} : $response;
+    });
   }
 
   private function buildQuery() {
